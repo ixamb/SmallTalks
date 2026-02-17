@@ -1,12 +1,11 @@
-using System;
 using System.Collections.Generic;
-using SmallTalks.UI.ChatView.Components;
+using SmallTalks.UI.Chat.Components;
 using TheForge.Services.Views;
 using TheForge.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SmallTalks.UI.ChatView
+namespace SmallTalks.UI.Chat
 {
     public sealed class ChatView : View
     {

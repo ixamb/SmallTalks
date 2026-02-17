@@ -1,17 +1,17 @@
 using System.Collections.Generic;
-using SmallTalks.UI.ChatListView.Components;
+using SmallTalks.UI.NarrativeList.Components;
 using TheForge.Extensions;
 using TheForge.Services.Views;
 using UnityEngine;
 
-namespace SmallTalks.UI.PreviewListView
+namespace SmallTalks.UI.NarrativeList
 {
-    public sealed class PreviewListView : View
+    public sealed class NarrativeListView : View
     {
         [SerializeField] private Transform chatPreviewContent;
-        [SerializeField] private ChatPreviewComponent chatPreviewComponentPrefab;
+        [SerializeField] private NarrativePreviewComponent narrativePreviewComponentPrefab;
 
-        private readonly List<ChatPreviewComponent> _chatPreviewComponents = new();
+        private readonly List<NarrativePreviewComponent> _chatPreviewComponents = new();
         
         private void Start()
         {

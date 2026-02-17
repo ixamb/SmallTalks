@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SmallTalks.UI.Utils
+namespace SmallTalks.UI.Tools
 {
     [ExecuteAlways]
     public class AdaptiveTextWidth : MonoBehaviour

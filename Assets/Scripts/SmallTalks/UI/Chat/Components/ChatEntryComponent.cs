@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace SmallTalks.UI.ChatView.Components
+namespace SmallTalks.UI.Chat.Components
 {
     public sealed class ChatEntryComponent :  MonoBehaviour
     {

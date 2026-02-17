@@ -3,9 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SmallTalks.UI.ChatListView.Components
+namespace SmallTalks.UI.NarrativeList.Components
 {
-    public sealed class ChatPreviewComponent : MonoBehaviour
+    public sealed class NarrativePreviewComponent : MonoBehaviour
     {
         [SerializeField] private Image profilePicture;
         [SerializeField] private new TMP_Text name;
@@ -14,14 +14,14 @@ namespace SmallTalks.UI.ChatListView.Components
         [SerializeField] private Transform tagContent;
         [SerializeField] private TagComponent tagComponentPrefab;
 
-        public void Initialize(ChatPreviewData chatPreviewData)
+        public void Initialize(NarrativePreviewData narrativePreviewData)
         {
-            profilePicture.sprite = chatPreviewData.ProfilePicture;
-            name.text = chatPreviewData.Name;
-            description.text = chatPreviewData.Description;
+            profilePicture.sprite = narrativePreviewData.ProfilePicture;
+            name.text = narrativePreviewData.Name;
+            description.text = narrativePreviewData.Description;
         }
 
-        public sealed record ChatPreviewData
+        public sealed record NarrativePreviewData
         {
             public Sprite ProfilePicture { get; set; }
             public string Name { get; set; }
