@@ -30,7 +30,7 @@ namespace SmallTalks.Data
         public sealed class SenderProfile
         {
             [SerializeField] private Sprite profilePicture;
-            [SerializeField] private new string name;
+            [SerializeField] private string name;
             [SerializeField] private string description;
         }
     }

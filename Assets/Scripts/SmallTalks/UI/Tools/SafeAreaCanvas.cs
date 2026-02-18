@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace SmallTalks.UI.Tools
 {
     using UnityEngine;
@@ -5,10 +7,10 @@ namespace SmallTalks.UI.Tools
     [ExecuteAlways]
     public class SafeAreaCanvas : MonoBehaviour
     {
-        [SerializeField] private bool applyTop = true;
-        [SerializeField] private bool applyBottom = true;
-        [SerializeField] private bool applyLeft = true;
-        [SerializeField] private bool applyRight = true;
+        [UsedImplicitly] [SerializeField] private bool applyTop = true;
+        [UsedImplicitly] [SerializeField] private bool applyBottom = true;
+        [UsedImplicitly] [SerializeField] private bool applyLeft = true;
+        [UsedImplicitly] [SerializeField] private bool applyRight = true;
 
         private RectTransform _rectTransform;
         private Rect _lastSafeArea;

@@ -26,7 +26,7 @@ namespace SmallTalks.UI.Tools
 
         private void LateUpdate()
         {
-            if (referenceRect == null) return;
+            if (!referenceRect) return;
 
             var currentValidCount = GetValidChildCount();
     
@@ -40,12 +40,12 @@ namespace SmallTalks.UI.Tools
         
         private int GetValidChildCount()
         {
-            return transform.Cast<Transform>().Count(child => child.GetComponent<HorizontalViewNavElement>() != null);
+            return transform.Cast<Transform>().Count(child => child.GetComponent<HorizontalViewNavElement>());
         }
 
         private void UpdateWidth()
         {
-            if (_rectTransform == null || referenceRect == null) return;
+            if (!_rectTransform || !referenceRect) return;
 
             var validCount = GetValidChildCount();
             var pageWidth = referenceRect.rect.width;
