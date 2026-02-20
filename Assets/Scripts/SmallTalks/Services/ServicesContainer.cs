@@ -10,8 +10,9 @@ namespace SmallTalks.Services
     [RequireComponent(typeof(IActionSchedulerService))]
     [RequireComponent(typeof(ISceneService))]
     [RequireComponent(typeof(IViewService))]
+    [RequireComponent(typeof(TheForge.Services.LocalSave.ILocalSaveService))]
     [RequireComponent(typeof(ILocalSaveService))]
-    [RequireComponent(typeof(GameDataContainer))]
+    [RequireComponent(typeof(IGameDataService))]
     public sealed class ServicesContainer : MonoBehaviour
     {
     }

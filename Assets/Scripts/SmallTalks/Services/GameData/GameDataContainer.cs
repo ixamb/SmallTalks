@@ -8,5 +8,7 @@ namespace SmallTalks.Services.GameData
     public class GameDataContainer : ScriptableObject
     {
         [SerializeField] private List<NarrativeData> narrativeData;
+        
+        internal List<NarrativeData> NarrativeData => narrativeData;
     }
 }

@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47c859b670f44112a00709084e7bdff9, type: 3}
-  m_Name: Narrative Data
+  m_Name: Test Narrative Data
   m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Data.NarrativeData
+  guid: dc3fa4d6-bb05-4149-a27b-5820c185fc7f
   senderProfile:
     profilePicture: {fileID: 0}
-    name: 
-    description: 
+    name: Test name
+    description: Test Description
   narrativeEntries: []

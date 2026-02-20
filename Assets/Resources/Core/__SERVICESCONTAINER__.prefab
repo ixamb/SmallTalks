@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 7356246040853836564}
   - component: {fileID: 6425512162936400080}
   - component: {fileID: 130879711739041109}
+  - component: {fileID: -7723495324817641922}
   - component: {fileID: 8496958680601326935}
+  - component: {fileID: 1174562852066617022}
   m_Layer: 0
   m_Name: __SERVICESCONTAINER__
   m_TagString: Untagged
@@ -84,6 +86,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3527f7b8cfde445d9e0e2e19c71499a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Services.LocalSave.LocalSaveService
+--- !u!114 &-7723495324817641922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851402504678796642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a892980f72854fe6aefe2c84249cd80e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.LocalSave.LocalSaveService
 --- !u!114 &8496958680601326935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -96,3 +110,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac3ec602624f44e896b9313256230cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Services.Views.ViewService
+--- !u!114 &1174562852066617022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851402504678796642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a4bb879ec4d4924b3719b7311959970, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.GameData.GameDataService
+  dataContainer: {fileID: 11400000, guid: 2c89fedca531344849e211850b54ffa2, type: 2}

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using SmallTalks.Data;
 using SmallTalks.UI.Chat.Components;
 using TheForge.Services.Views;
 using TheForge.Utils;
@@ -13,16 +15,49 @@ namespace SmallTalks.UI.Chat
         [SerializeField] private ChatEntryComponent senderChatEntryComponentPrefab;
         [SerializeField] private Transform chatContent;
         
-        private void Start()
+        public void Initialize(List<NarrativeData.NarrativeEntry> narrativeEntries, uint progress)
         {
-            OnShow += Initialize;
-        }
-        
-        private void Initialize()
-        {
+            NarrativeData.NarrativeEntry.MessageSender? lastSender = null;
+            GameObject activeChatGroup = null;
+            for (var i = 0; i < progress; i++)
+            {
+                var narrativeEntry = narrativeEntries[i];
+                
+                if (lastSender is null)
+                {
+                    lastSender = narrativeEntry.Sender;
+                    activeChatGroup = GenerateEmptyMessageGroup(lastSender!.Value);
+                }
+                else
+                {
+                    if (narrativeEntry.Sender != lastSender.Value)
+                    {
+                        lastSender = narrativeEntry.Sender;
+                        activeChatGroup = GenerateEmptyMessageGroup(lastSender.Value);
+                    }
+                }
+
+                AppendMessageToMessageGroup(activeChatGroup, narrativeEntry.Entry);
+            }
         }
 
-        private GameObject GenerateReceiverMessageGroup(IEnumerable<string> messages)
+        private GameObject GenerateEmptyMessageGroup(NarrativeData.NarrativeEntry.MessageSender sender)
+        {
+            return sender switch
+            {
+                NarrativeData.NarrativeEntry.MessageSender.Myself => InitializeEmptySenderMessageGroup(),
+                NarrativeData.NarrativeEntry.MessageSender.Other => InitializeEmptyReceiverMessageGroup(),
+                _ => throw new ArgumentOutOfRangeException(nameof(sender), sender, null)
+            };
+        }
+
+        private void AppendMessageToMessageGroup(GameObject messageGroup, string message)
+        {
+            var receiverChatEntryComponent = Instantiate(receiverChatEntryComponentPrefab, messageGroup.transform);
+            receiverChatEntryComponent.Initialize(message);
+        }
+
+        private GameObject InitializeEmptyReceiverMessageGroup()
         {
             var receiverGroup = new GameObject($"receiverGroup_{StringUtils.Random(8)}");
             receiverGroup.AddComponent<RectTransform>();
@@ -41,15 +76,10 @@ namespace SmallTalks.UI.Chat
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.MinSize;
 
-            foreach (var message in messages)
-            {
-                var receiverChatEntryComponent = Instantiate(receiverChatEntryComponentPrefab, receiverGroup.transform);
-                receiverChatEntryComponent.Initialize(message);
-            }
             return receiverGroup;
         }
         
-        private GameObject GenerateSenderMessageGroup(IEnumerable<string> messages)
+        private GameObject InitializeEmptySenderMessageGroup()
         {
             var receiverGroup = new GameObject($"receiverGroup_{StringUtils.Random(8)}");
             receiverGroup.AddComponent<RectTransform>();
@@ -68,11 +98,7 @@ namespace SmallTalks.UI.Chat
             contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.MinSize;
 
-            foreach (var message in messages)
-            {
-                var receiverChatEntryComponent = Instantiate(senderChatEntryComponentPrefab, receiverGroup.transform);
-                receiverChatEntryComponent.Initialize(message);
-            }
+
             return receiverGroup;
         }
     }

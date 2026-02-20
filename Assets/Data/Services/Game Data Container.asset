@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa14535c7734cf1b184f9406bb376fe, type: 3}
   m_Name: Game Data Container
   m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.GameData.GameDataContainer
-  narrativeData: []
+  narrativeData:
+  - {fileID: 11400000, guid: c4bd19181e0fe4c0b9c05d38c6cc5749, type: 2}
