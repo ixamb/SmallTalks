@@ -7,6 +7,7 @@ using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Swipe.Components;
 using TheForge.Extensions;
 using TheForge.Services.Views;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +17,14 @@ namespace SmallTalks.UI.Swipe
     {
         [Header("Top card info")]
         [SerializeField] private CardComponent cardComponent;
+        [SerializeField] private TMP_Text emptyDescription;
         [Space]
         [Header("Interaction fields")]
         [SerializeField] private Button likeButton;
         [SerializeField] private Button dislikeButton;
         
         private Dictionary<Guid,NarrativeData> _pendingNarratives = new();
-        private Guid _topNarrative;
+        private Guid _topNarrativeId;
 
         protected override void Awake()
         {
@@ -43,29 +45,30 @@ namespace SmallTalks.UI.Swipe
 
         private void OnLikeButtonClicked()
         {
-            LocalSaveService.Instance.RegisterNarrativeProgress(_topNarrative, true);
-            _pendingNarratives.Remove(_topNarrative);
+            LocalSaveService.Instance.RegisterNarrativeProgress(_topNarrativeId, true);
+            _pendingNarratives.Remove(_topNarrativeId);
             InitializeNextNarrativeOnStack();
         }
 
         private void OnDislikeButtonClicked()
         {
-            LocalSaveService.Instance.RegisterNarrativeProgress(_topNarrative, false);
-            _pendingNarratives.Remove(_topNarrative);
+            LocalSaveService.Instance.RegisterNarrativeProgress(_topNarrativeId, false);
+            _pendingNarratives.Remove(_topNarrativeId);
             InitializeNextNarrativeOnStack();
         }
 
         private void InitializeNextNarrativeOnStack()
         {
-            if (_pendingNarratives.Any())
-            {
-                cardComponent.gameObject.SetActive(false);
+            var remainingPendingNarrative = _pendingNarratives.Any();
+            cardComponent.gameObject.SetActive(remainingPendingNarrative);
+            emptyDescription.gameObject.SetActive(!remainingPendingNarrative);
+
+            if (!remainingPendingNarrative)
                 return;
-            }
-            
+
             var topNarrative = _pendingNarratives.First();
             cardComponent.Initialize(topNarrative.Value.Sender.ProfilePicture, topNarrative.Value.Sender.Name, topNarrative.Value.Sender.Description);
-            _topNarrative = topNarrative.Key;
+            _topNarrativeId = topNarrative.Key;
         }
     }
 }

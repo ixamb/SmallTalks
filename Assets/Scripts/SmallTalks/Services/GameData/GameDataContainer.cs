@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SmallTalks.Services.GameData
 {
     [CreateAssetMenu(fileName = "Game Data Container", menuName = "Small Talks/Services/Game Data Container")]
-    public class GameDataContainer : ScriptableObject
+    public sealed class GameDataContainer : ScriptableObject
     {
         [SerializeField] private List<NarrativeData> narrativeData;
         

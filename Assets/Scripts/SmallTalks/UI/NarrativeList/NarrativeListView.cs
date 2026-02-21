@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using SmallTalks.Data;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Chat;
@@ -20,37 +20,40 @@ namespace SmallTalks.UI.NarrativeList
         
         private void Start()
         {
-            OnShow += Initialize;
+            Initialize();
         }
 
         private void Initialize()
         {
+            var narrativeData = GameDataService.Instance.NarrativeData();
             _chatPreviewComponents.DestroyAndClear();
 
             foreach (var runningNarrativeKvp in LocalSaveService.Instance.GetAllNarrativeProgressSteps()
                          .Where(runningNarrativeKvp => runningNarrativeKvp.Value.Accepted))
             {
-                if (!GameDataService.Instance.NarrativeData().TryGetValue(runningNarrativeKvp.Key, out var narrativeData))
+                var kvp = runningNarrativeKvp;
+                
+                if (!narrativeData.TryGetValue(kvp.Key, out var data))
                     continue;
                 
                 var narrativePreview = Instantiate(narrativePreviewComponentPrefab, chatPreviewContent);
                 narrativePreview.Initialize(new NarrativePreviewComponent.NarrativePreviewData
                 {
-                    ProfilePicture = narrativeData.Sender.ProfilePicture,
-                    Name = narrativeData.Sender.Name,
-                    Description = narrativeData.Sender.Description,
-                    OnClick = () => ShowChatView(runningNarrativeKvp.Key, runningNarrativeKvp.Value.Progress)
+                    ProfilePicture = data.Sender.ProfilePicture,
+                    Name = data.Sender.Name,
+                    Description = data.Sender.Description,
+                    OnClick = () => ShowChatView(data, kvp.Value.Progress)
                 });
                 _chatPreviewComponents.Add(narrativePreview);
             }
         }
 
-        private void ShowChatView(Guid narrativeId, uint progress)
+        private void ShowChatView(NarrativeData narrative, uint progress)
         {
-            var narrative = GameDataService.Instance.NarrativeData()[narrativeId];
             
             var chatView = ViewService.Instance.GetView<ChatView>("chat-view");
             chatView.Initialize(narrative.NarrativeEntries, progress);
+            chatView.ShowView();
         }
     }
 }

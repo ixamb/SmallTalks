@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SmallTalks.UI.Tools
 {
-    public class HorizontalViewNavElement : MonoBehaviour
+    public sealed class HorizontalViewNavElement : MonoBehaviour
     {
         [SerializeField] private int index;
         

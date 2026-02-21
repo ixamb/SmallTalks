@@ -5,7 +5,7 @@ namespace SmallTalks.UI.Tools
     using UnityEngine;
 
     [ExecuteAlways]
-    public class SafeAreaCanvas : MonoBehaviour
+    public sealed class SafeAreaCanvas : MonoBehaviour
     {
         [UsedImplicitly] [SerializeField] private bool applyTop = true;
         [UsedImplicitly] [SerializeField] private bool applyBottom = true;

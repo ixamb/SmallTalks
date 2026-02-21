@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace SmallTalks.UI.Tools
 {
     [ExecuteAlways]
-    public class AdaptiveTextWidth : MonoBehaviour
+    public sealed class AdaptiveTextWidth : MonoBehaviour
     {
         [SerializeField] private float maxWidth = 283f;
         private TMP_Text _tmpText;
