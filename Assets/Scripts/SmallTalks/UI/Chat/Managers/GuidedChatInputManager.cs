@@ -1,4 +1,5 @@
 using SmallTalks.UI.Chat.Components;
+using TheForge.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,8 +12,8 @@ namespace SmallTalks.UI.Chat.Managers
         [SerializeField] private Transform keyboard;
         [SerializeField] private Animator contentAnimator;
 
-        private static readonly int Property = Animator.StringToHash("Keyboard Up");
-        private static readonly int Property1 = Animator.StringToHash("Keyboard Down");
+        private static readonly int KeyboardUp = Animator.StringToHash("Keyboard Up");
+        private static readonly int KeyboardDown = Animator.StringToHash("Keyboard Down");
 
         private void Start()
         {
@@ -20,19 +21,23 @@ namespace SmallTalks.UI.Chat.Managers
             {
                 keyboardKeyComponent.InitializeInputAction(() =>
                 {
-                    guidedChatInputComponent.OnInput();
+                    switch (keyboardKeyComponent.GetKeyType())
+                    {
+                        case KeyboardKeyComponent.KeyType.None: break;
+                        case KeyboardKeyComponent.KeyType.Typing: guidedChatInputComponent.OnInput(); break;
+                        case KeyboardKeyComponent.KeyType.KeyboardDown: HideKeyboard(); break;
+                    }
                 });
             }
 
-            guidedChatInputComponent.OnClick += () =>
-            {
-                contentAnimator.SetTrigger(Property);
-            };
+            guidedChatInputComponent.OnClick += ShowKeyboard;
 
             guidedChatInputComponent.OnMessageIntegrity += () =>
             {
                 sendButton.gameObject.SetActive(true);
             };
+            
+            sendButton.onClick.ReplaceListeners(OnMessageSendRequest);
         }
 
         public void InitializeNewGuidedMessage(string message)
@@ -42,7 +47,11 @@ namespace SmallTalks.UI.Chat.Managers
 
         private void OnMessageSendRequest()
         {
-            contentAnimator.SetTrigger(Property1);
+            HideKeyboard();
         }
+        
+        private void ShowKeyboard() => contentAnimator.SetTrigger(KeyboardUp);
+        private void HideKeyboard() => contentAnimator.SetTrigger(KeyboardDown);
+        
     }
 }
