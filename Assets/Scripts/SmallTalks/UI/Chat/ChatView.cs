@@ -14,7 +14,7 @@ namespace SmallTalks.UI.Chat
         [SerializeField] private ChatEntryComponent receiverChatEntryComponentPrefab;
         [SerializeField] private ChatEntryComponent senderChatEntryComponentPrefab;
         [SerializeField] private Transform chatContent;
-        
+
         public void Initialize(List<NarrativeData.NarrativeEntry> narrativeEntries, uint progress)
         {
             NarrativeData.NarrativeEntry.MessageSender? lastSender = null;
@@ -40,6 +40,8 @@ namespace SmallTalks.UI.Chat
                 AppendMessageToMessageGroup(activeChatGroup, narrativeEntry.Entry);
             }
         }
+        
+        #region message groups
 
         private GameObject GenerateEmptyMessageGroup(NarrativeData.NarrativeEntry.MessageSender sender)
         {
@@ -101,5 +103,7 @@ namespace SmallTalks.UI.Chat
 
             return receiverGroup;
         }
+        
+        #endregion message groups
     }
 }

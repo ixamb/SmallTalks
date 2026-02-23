@@ -6,6 +6,7 @@ namespace SmallTalks.UI.Tools
     public sealed class HorizontalViewNavigation : MonoBehaviour
     {
         [SerializeField] private float navigationSpeed = 10f;
+        [SerializeField] private int defaultPosition;
 
         private int _elements;
     
@@ -17,6 +18,12 @@ namespace SmallTalks.UI.Tools
         {
             _rectTransform = GetComponent<RectTransform>();
             _elements = transform.Cast<Transform>().Count(child => child.GetComponent<HorizontalViewNavElement>() != null);
+            
+            var defaultPositionElement = GetComponentsInChildren<HorizontalViewNavElement>().FirstOrDefault(element => element.Index == defaultPosition);
+            if (defaultPositionElement is not null)
+            {
+                ImmediateNavigateTo(defaultPositionElement);
+            }
         }
 
         private void Update()
@@ -39,6 +46,13 @@ namespace SmallTalks.UI.Tools
             var width = _rectTransform.rect.width;
             _xNavigationGoal = (width / _elements) * horizontalViewNavElement.Index;
             _navigate = true;
+        }
+
+        public void ImmediateNavigateTo(HorizontalViewNavElement horizontalViewNavElement)
+        {
+            var width = _rectTransform.rect.width;
+            var xNavigationGoal = (width / _elements) * horizontalViewNavElement.Index;
+            _rectTransform.anchoredPosition = new Vector2(-xNavigationGoal, _rectTransform.anchoredPosition.y);
         }
     }
 }

@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 7380350396064089863}
   - component: {fileID: 9150602754729540294}
   - component: {fileID: 6313748362332389732}
+  - component: {fileID: 899060919011301972}
   m_Layer: 5
   m_Name: Keyboard Key Component
   m_TagString: Untagged
@@ -293,3 +294,15 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &899060919011301972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5984682005799069979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b8e1f0abbf84940aaa185fcf36040b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.UI.Chat.Components.KeyboardKeyComponent
