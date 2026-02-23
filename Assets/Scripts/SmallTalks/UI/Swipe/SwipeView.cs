@@ -64,7 +64,11 @@ namespace SmallTalks.UI.Swipe
             emptyDescription.gameObject.SetActive(!remainingPendingNarrative);
 
             if (!remainingPendingNarrative)
+            {
+                likeButton.interactable = false;
+                dislikeButton.interactable = false;
                 return;
+            }
 
             var topNarrative = _pendingNarratives.First();
             cardComponent.Initialize(topNarrative.Value.Sender.ProfilePicture, topNarrative.Value.Sender.Name, topNarrative.Value.Sender.Description);
