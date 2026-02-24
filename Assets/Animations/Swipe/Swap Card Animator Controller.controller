@@ -9,7 +9,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Swap Dislike
+    m_ConditionEvent: Swap Like
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2716892907566106590}
@@ -54,7 +54,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swap Out Card Animation
+  m_Name: Swap Out Dislike Card Animation
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -165,7 +165,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swap Out Dislike Card Animation
+  m_Name: Swap Out Like Card Animation
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -222,7 +222,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Swap Like
+    m_ConditionEvent: Swap Dislike
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -331287161318151717}

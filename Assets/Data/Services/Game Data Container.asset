@@ -14,4 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.GameData.GameDataContainer
   narrativeData:
   - {fileID: 11400000, guid: c4bd19181e0fe4c0b9c05d38c6cc5749, type: 2}
-  - {fileID: 11400000, guid: 0497f126a1229414f8702083a69a36c8, type: 2}
