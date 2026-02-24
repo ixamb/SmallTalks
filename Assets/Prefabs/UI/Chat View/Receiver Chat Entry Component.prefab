@@ -402,6 +402,7 @@ GameObject:
   - component: {fileID: 603304673268725661}
   - component: {fileID: 6602194089569704257}
   - component: {fileID: 5725336817883028685}
+  - component: {fileID: 8471360873705131876}
   m_Layer: 5
   m_Name: Receiver Chat Entry Component
   m_TagString: Untagged
@@ -427,7 +428,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 32.585, y: -17.205}
+  m_AnchoredPosition: {x: 32.585022, y: -17.204956}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6884937079707316225
@@ -503,3 +504,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.UI.ChatView.Components.ChatEntryComponent
   chatEntryText: {fileID: 3266627694465979279}
+--- !u!95 &8471360873705131876
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3611400373188610928}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b23ce341ed97c4055ab119325a41ef0f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

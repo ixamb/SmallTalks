@@ -42,6 +42,7 @@ namespace SmallTalks.UI.Swipe
             {
                 _pendingNarratives.Remove(narrativeProgressStep.Key);
             }
+            cardComponent.OnSwapAnimation = InitializeNextNarrativeOnStack;
             InitializeNextNarrativeOnStack();
         }
 
@@ -52,14 +53,16 @@ namespace SmallTalks.UI.Swipe
             ViewService.Instance.GetView<NarrativeListView>("narrative-list-view").OnNewChatReceivedHandler(_topNarrativeId, -1);
             
             _pendingNarratives.Remove(_topNarrativeId);
-            InitializeNextNarrativeOnStack();
+            cardComponent.LikeSwapAnimation();
+            //InitializeNextNarrativeOnStack();
         }
 
         private void OnDislikeButtonClicked()
         {
             LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, false);
             _pendingNarratives.Remove(_topNarrativeId);
-            InitializeNextNarrativeOnStack();
+            cardComponent.DislikeSwapAnimation();
+            //InitializeNextNarrativeOnStack();
         }
 
         private void InitializeNextNarrativeOnStack()

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47c859b670f44112a00709084e7bdff9, type: 3}
+  m_Name: Test Narrative Data 1
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Data.NarrativeData
+  guid: 70235c4b-b741-4548-84c6-e8535a40fe64
+  senderProfile:
+    profilePicture: {fileID: 0}
+    name: MIchael Jackson
+    description: Monsieur le roi de la pop il parait, je sais pas
+  tags:
+  - text: Billie Jean
+  narrativeEntries:
+  - messageSender: 1
+    entry: HE HEEEEE
+  - messageSender: 0
+    entry: Pardon?
+  - messageSender: 1
+    entry: Are you ok?
