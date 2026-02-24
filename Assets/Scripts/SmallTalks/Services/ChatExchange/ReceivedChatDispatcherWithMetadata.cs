@@ -10,7 +10,12 @@ namespace SmallTalks.Services.ChatExchange
     public sealed class ReceivedChatDispatcherWithMetadata : MonoBehaviour, IChatReceivedHandler
     {
         private static readonly List<IChatReceivedHandlerWithMetadata> HandlersWithMetadata = new();
-        
+
+        private void Start()
+        {
+            ChatExchangeService.Instance.RegisterChatReceivedHandler(this);
+        }
+
         public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
         {
             var narratives = GameDataService.Instance.GetNarrativeData();
