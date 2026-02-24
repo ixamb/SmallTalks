@@ -47,6 +47,7 @@ namespace SmallTalks.UI.NarrativeList
                     ProfilePicture = data.Sender.ProfilePicture,
                     Name = data.Sender.Name,
                     Description = data.NarrativeEntries.IsIndexValid(runningNarrativeKvp.Value.Progress) ? data.NarrativeEntries[runningNarrativeKvp.Value.Progress].Entry : "Nouvelle discussion!",
+                    Tags = data.Tags.Select(tag => tag.Text).ToList(),
                     Unread = kvp.Value.HasNewMessage,
                     OnClick = () =>
                     {
@@ -82,6 +83,7 @@ namespace SmallTalks.UI.NarrativeList
                     ProfilePicture = narrativeData.Sender.ProfilePicture,
                     Name = narrativeData.Sender.Name,
                     Description = narrativeData.NarrativeEntries.IsIndexValid(progressStep) ? narrativeData.NarrativeEntries[progressStep].Entry : "Nouvelle discussion!",
+                    Tags = narrativeData.Tags.Select(tag => tag.Text).ToList(),
                     Unread = false,
                     OnClick = () =>
                     {

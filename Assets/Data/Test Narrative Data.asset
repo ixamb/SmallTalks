@@ -17,6 +17,8 @@ MonoBehaviour:
     profilePicture: {fileID: 0}
     name: Jean-Mich'
     description: "J'ai oubli\xE9 une description #grosnaze"
+  tags:
+  - text: Test Chat
   narrativeEntries:
   - messageSender: 1
     entry: Bien le bonjour, ceci est un test !

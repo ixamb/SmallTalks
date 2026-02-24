@@ -19,6 +19,8 @@ namespace SmallTalks.Data
         
         [SerializeField] private SenderProfile senderProfile;
         [Space]
+        [SerializeField] private List<Tag> tags;
+        [Space]
         [SerializeField] private List<NarrativeEntry> narrativeEntries;
         
 #if UNITY_EDITOR
@@ -50,6 +52,7 @@ namespace SmallTalks.Data
 #endif
         
         public SenderProfile Sender => senderProfile;
+        public List<Tag> Tags => tags;
         public List<NarrativeEntry> NarrativeEntries => narrativeEntries;
 
         [Serializable]
@@ -77,6 +80,14 @@ namespace SmallTalks.Data
             public Sprite ProfilePicture => profilePicture;
             public string Name => name;
             public string Description => description;
+        }
+
+        [Serializable]
+        public sealed class Tag
+        {
+            [SerializeField] private string text;
+            
+            public string Text => text;
         }
     }
 }
