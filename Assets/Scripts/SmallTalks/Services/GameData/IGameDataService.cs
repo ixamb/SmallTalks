@@ -7,6 +7,6 @@ namespace SmallTalks.Services.GameData
 {
     public interface IGameDataService : ISingleton
     {
-        Dictionary<Guid, NarrativeData> NarrativeData();
+        Dictionary<Guid, NarrativeData> GetNarrativeData();
     }
 }

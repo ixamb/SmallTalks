@@ -1383,8 +1383,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 139.5, y: -73.41}
-  m_SizeDelta: {x: 249, y: 0}
+  m_AnchoredPosition: {x: 139.67409, y: -73.41}
+  m_SizeDelta: {x: 249.34818, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &344800752
 MonoBehaviour:
@@ -3510,90 +3510,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5808338629645946640, guid: 17d5b2e715e2542bf996a8a39687963e, type: 3}
   m_PrefabInstance: {fileID: 593073158}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &619394800
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 619394802}
-  - component: {fileID: 619394801}
-  m_Layer: 0
-  m_Name: Global Light 2D
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &619394801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619394800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ComponentVersion: 2
-  m_LightType: 4
-  m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
-  m_LightVolumeIntensity: 1
-  m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000
-  m_LightCookieSprite: {fileID: 0}
-  m_DeprecatedPointLightCookieSprite: {fileID: 0}
-  m_LightOrder: 0
-  m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 0
-  m_NormalMapDistance: 3
-  m_NormalMapQuality: 2
-  m_UseNormalMap: 0
-  m_ShadowsEnabled: 0
-  m_ShadowIntensity: 0.75
-  m_ShadowSoftness: 0
-  m_ShadowSoftnessFalloffIntensity: 0.5
-  m_ShadowVolumeIntensityEnabled: 0
-  m_ShadowVolumeIntensity: 0.75
-  m_LocalBounds:
-    m_Center: {x: 0, y: -0.00000011920929, z: 0}
-    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
-  m_PointLightInnerAngle: 360
-  m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 1
-  m_ShapeLightParametricSides: 5
-  m_ShapeLightParametricAngleOffset: 0
-  m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 0.5
-  m_ShapeLightFalloffOffset: {x: 0, y: 0}
-  m_ShapePath:
-  - {x: -0.5, y: -0.5, z: 0}
-  - {x: 0.5, y: -0.5, z: 0}
-  - {x: 0.5, y: 0.5, z: 0}
-  - {x: -0.5, y: 0.5, z: 0}
---- !u!4 &619394802
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619394800}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &636766693
 GameObject:
   m_ObjectHideFlags: 0
@@ -4631,8 +4547,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 139.5, y: -56.205}
-  m_SizeDelta: {x: 249, y: 0}
+  m_AnchoredPosition: {x: 139.67409, y: -56.205}
+  m_SizeDelta: {x: 249.34818, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &790325487
 MonoBehaviour:
@@ -5482,6 +5398,7 @@ GameObject:
   m_Component:
   - component: {fileID: 907475384}
   - component: {fileID: 907475385}
+  - component: {fileID: 907475386}
   m_Layer: 5
   m_Name: Header
   m_TagString: Untagged
@@ -5530,6 +5447,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &907475386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907475383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bfa4df8c4f749468a0c75918174db60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.UI.Chat.Components.ChatHeaderComponent
+  headerImage: {fileID: 1979002032}
+  headerText: {fileID: 439603607}
 --- !u!1 &908215182
 GameObject:
   m_ObjectHideFlags: 0
@@ -5604,8 +5535,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 915638154}
+  - component: {fileID: 915638156}
+  - component: {fileID: 915638155}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CONTROLLERS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5626,6 +5559,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &915638155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915638153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0089fde019ac4f9187ddf86bac6c320c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.ChatExchange.ReceivedChatDispatcherWithMetadata
+--- !u!114 &915638156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915638153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b1b4cd7b1a469389200ff44ace0465, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.ChatExchange.ChatExchangeService
 --- !u!1 &921032625
 GameObject:
   m_ObjectHideFlags: 0
@@ -5778,6 +5735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6278dcccc2f94fd180037e4c9053dadd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.UI.Chat.Managers.GuidedChatInputManager
+  footer: {fileID: 307998204}
   guidedChatInputComponent: {fileID: 167299558}
   sendButton: {fileID: 4420876}
   keyboard: {fileID: 1845973821}
@@ -5859,7 +5817,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: -0.009994507, y: 43}
-  m_SizeDelta: {x: 1179, y: -86}
+  m_SizeDelta: {x: 1180.0446, y: -86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &948289870
 MonoBehaviour:
@@ -6838,8 +6796,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 149.5, y: -46.005}
-  m_SizeDelta: {x: 279, y: 0}
+  m_AnchoredPosition: {x: 149.67409, y: -46.005}
+  m_SizeDelta: {x: 279.34818, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1184787776
 MonoBehaviour:
@@ -7440,7 +7398,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.5, y: -40}
+  m_AnchoredPosition: {x: 166.67407, y: -40}
   m_SizeDelta: {x: 43.74, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1375260169
@@ -8110,8 +8068,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 149.5, y: -276.215}
-  m_SizeDelta: {x: 279, y: 0}
+  m_AnchoredPosition: {x: 149.67409, y: -276.215}
+  m_SizeDelta: {x: 279.34818, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1500475937
 MonoBehaviour:
@@ -8742,8 +8700,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 139.5, y: -324.20502}
-  m_SizeDelta: {x: 279, y: 0}
+  m_AnchoredPosition: {x: 139.67409, y: -324.20502}
+  m_SizeDelta: {x: 279.34818, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1574638356
 MonoBehaviour:
@@ -8873,9 +8831,11 @@ MonoBehaviour:
   viewCode: chat-view
   useAnimation: 1
   keepViewDisplayed: 0
+  chatHeader: {fileID: 907475386}
   receiverChatEntryComponentPrefab: {fileID: 5725336817883028685, guid: cabcec2280bd84d8aab64b0d0d8b1254, type: 3}
   senderChatEntryComponentPrefab: {fileID: 2031172109671355888, guid: 81170f5192a7d41d681d7fdf5c07e4c8, type: 3}
   chatContent: {fileID: 2144786590}
+  guidedChatInputManager: {fileID: 936737445}
 --- !u!1 &1603129770
 GameObject:
   m_ObjectHideFlags: 0
@@ -9846,6 +9806,7 @@ MonoBehaviour:
   viewCode: settings-view
   useAnimation: 0
   keepViewDisplayed: 0
+  deleteDataButton: {fileID: 524813877}
 --- !u!95 &1770229364
 Animator:
   serializedVersion: 7
@@ -12122,7 +12083,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 619394802}
   - {fileID: 915638154}
   - {fileID: 206183264}
   - {fileID: 975713349}

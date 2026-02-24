@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 3758782481607995937}
   - component: {fileID: 8882240628719685181}
-  - component: {fileID: 7356246040853836564}
   - component: {fileID: 6425512162936400080}
   - component: {fileID: 130879711739041109}
   - component: {fileID: -7723495324817641922}
   - component: {fileID: 8496958680601326935}
   - component: {fileID: 1174562852066617022}
+  - component: {fileID: 8530838673802344864}
   m_Layer: 0
   m_Name: __SERVICESCONTAINER__
   m_TagString: Untagged
@@ -50,18 +50,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a71e379fb82643a5ba46ac16a052538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bobotchi.Startup
---- !u!114 &7356246040853836564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6851402504678796642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 880cc997f6134c0cbb2a66b5cfc93500, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Core.Services.Scheduler.ActionSchedulerService
 --- !u!114 &6425512162936400080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,3 +111,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmallTalks.Services.GameData.GameDataService
   dataContainer: {fileID: 11400000, guid: 2c89fedca531344849e211850b54ffa2, type: 2}
+--- !u!114 &8530838673802344864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6851402504678796642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af3bb584c1594ac1bd0497bd1b45313c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: TheForge.Runtime::TheForge.Services.Delayer.ActionDelayerService

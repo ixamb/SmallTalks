@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SmallTalks.Data;
+using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
+using SmallTalks.UI.NarrativeList;
 using SmallTalks.UI.Swipe.Components;
 using TheForge.Extensions;
 using TheForge.Services.Views;
@@ -35,7 +37,7 @@ namespace SmallTalks.UI.Swipe
 
         private void Start()
         {
-            _pendingNarratives = GameDataService.Instance.NarrativeData();
+            _pendingNarratives = GameDataService.Instance.GetNarrativeData();
             foreach (var narrativeProgressStep in LocalSaveService.Instance.GetAllNarrativeProgressSteps())
             {
                 _pendingNarratives.Remove(narrativeProgressStep.Key);
@@ -45,14 +47,17 @@ namespace SmallTalks.UI.Swipe
 
         private void OnLikeButtonClicked()
         {
-            LocalSaveService.Instance.RegisterNarrativeProgress(_topNarrativeId, true);
+            LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, true);
+            ChatExchangeService.Instance.ExpectSenderAnswer(_topNarrativeId, isFirstMessage: true);
+            ViewService.Instance.GetView<NarrativeListView>("narrative-list-view").OnNewChatReceivedHandler(_topNarrativeId, -1);
+            
             _pendingNarratives.Remove(_topNarrativeId);
             InitializeNextNarrativeOnStack();
         }
 
         private void OnDislikeButtonClicked()
         {
-            LocalSaveService.Instance.RegisterNarrativeProgress(_topNarrativeId, false);
+            LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, false);
             _pendingNarratives.Remove(_topNarrativeId);
             InitializeNextNarrativeOnStack();
         }

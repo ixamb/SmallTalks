@@ -12,6 +12,7 @@ namespace SmallTalks.UI.Chat.Components
         
         [CanBeNull] public Action OnClick { get; set; }
         [CanBeNull] public Action OnMessageIntegrity { get; set; }
+        [CanBeNull] public Action OnMessageIncomplete { get; set; }
         
         private char[] _expectedMessage;
         private uint _currentMessageIndex;
@@ -20,6 +21,13 @@ namespace SmallTalks.UI.Chat.Components
         {
             _expectedMessage = expectedMessage.ToCharArray();
             _currentMessageIndex = 0;
+        }
+
+        public void Clear()
+        {
+            _expectedMessage = null;
+            _currentMessageIndex = 0;
+            textField.text = string.Empty;
         }
 
         public void OnInput()
@@ -32,6 +40,10 @@ namespace SmallTalks.UI.Chat.Components
             if (_currentMessageIndex == _expectedMessage.Length)
             {
                 OnMessageIntegrity?.Invoke();
+            }
+            else
+            {
+                OnMessageIncomplete?.Invoke();
             }
         }
 

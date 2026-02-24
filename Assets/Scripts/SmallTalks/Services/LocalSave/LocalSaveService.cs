@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using SmallTalks.Services.LocalSave.SaveObjects;
 using TheForge.Services;
 
@@ -13,30 +12,46 @@ namespace SmallTalks.Services.LocalSave
         protected override void Init()
         { }
 
-        public bool TryGetNarrativeProgressStep(Guid narrativeGuid, out uint? progressStep)
+        public Dictionary<Guid, NarrativeProgressInfo> GetAllNarrativeProgressSteps()
         {
-            var narratives = GetAllNarrativeProgressSteps();
-            if (narratives.TryGetValue(narrativeGuid, out var narrativeProgressInfo) && narrativeProgressInfo.Accepted)
+            return ForgeLocalSaveService.Instance.Get<Dictionary<Guid, NarrativeProgressInfo>>(Constants.SaveDataEntryKey.NarrativeProgresses)
+                   ?? new Dictionary<Guid, NarrativeProgressInfo>();
+        }
+
+        public bool TryGetNarrativeProgress(Guid narrativeGuid, out NarrativeProgressInfo progressInfo)
+        {
+            if (GetAllNarrativeProgressSteps().TryGetValue(narrativeGuid, out var narrativeProgressInfo))
             {
-                progressStep = narrativeProgressInfo.Progress;
+                progressInfo = narrativeProgressInfo;
+                return true;
+            }
+            
+            progressInfo = null;
+            return false;
+        }
+        
+        public bool TryGetNarrativeProgressStep(Guid narrativeGuid, out int? progressStep)
+        {
+            if (TryGetNarrativeProgress(narrativeGuid, out var progress))
+            {
+                progressStep = progress!.Progress;
                 return true;
             }
 
             progressStep = null;
             return false;
         }
-        
-        public bool IsNarrativeActive(Guid narrativeGuid)
+
+        public void RegisterNewNarrativeProgress(Guid narrativeId, bool wasAccepted, bool autoSave = true)
         {
             var narratives = GetAllNarrativeProgressSteps();
-            return narratives?.ContainsKey(narrativeGuid) ?? false;
+            narratives.TryAdd(narrativeId, new NarrativeProgressInfo(accepted: wasAccepted, isActive: wasAccepted, progress: 0));
+            SaveNarrativeProgressOntoForgeService(narratives, autoSave);
         }
 
-        public void RegisterNarrativeProgress(Guid narrativeId, bool wasAccepted, bool autoSave = true)
+        public void DeleteAllNarrativeProgress(bool autoSave = true)
         {
-            var narratives = GetAllNarrativeProgressSteps();
-            narratives.TryAdd(narrativeId, new NarrativeProgressInfo(wasAccepted, 0));
-            SaveNarrativeProgressOntoForgeService(narratives, autoSave);
+            SaveNarrativeProgressOntoForgeService(new Dictionary<Guid, NarrativeProgressInfo>(), autoSave);
         }
 
         public void DeleteNarrativeProgress(Guid narrativeId, bool autoSave = true)
@@ -46,15 +61,36 @@ namespace SmallTalks.Services.LocalSave
             SaveNarrativeProgressOntoForgeService(narratives, autoSave);
         }
         
-        public Dictionary<Guid, NarrativeProgressInfo> GetAllNarrativeProgressSteps()
+        public void IncreaseNarrativeProgressStep(Guid narrativeId, int progressIncrease, bool autoSave = true)
         {
-            return ForgeLocalSaveService.Instance.Get<Dictionary<Guid, NarrativeProgressInfo>>(Constants.SaveDataEntryKey.NarrativeProgresses)
-                   ?? new Dictionary<Guid, NarrativeProgressInfo>();
+            var progresses = GetAllNarrativeProgressSteps();
+            if (!progresses.TryGetValue(narrativeId, out var progress))
+                return;
+            
+            progress.Progress += progressIncrease;
+            progress.LastUpdate = DateTime.Now;
+            SaveNarrativeProgressOntoForgeService(progresses, autoSave);
         }
 
+        public void MarkNarrativeProgressNewMessageStatus(Guid narrativeId, bool hasNewMessage, bool autoSave = true)
+        {
+            var progresses = GetAllNarrativeProgressSteps();
+            if (!progresses.TryGetValue(narrativeId, out var progress))
+                return;
+            
+            progress.HasNewMessage = hasNewMessage;
+            SaveNarrativeProgressOntoForgeService(progresses, autoSave);
+        }
+
+        #region forge local save functions
+        
+        public void Save() => ForgeLocalSaveService.Instance.Save();
+        
         private void SaveNarrativeProgressOntoForgeService(Dictionary<Guid, NarrativeProgressInfo> narratives, bool autoSave = true)
         {
             ForgeLocalSaveService.Instance.Set(Constants.SaveDataEntryKey.NarrativeProgresses, narratives, autoSave);
         }
+        
+        #endregion forge local save functions
     }
 }

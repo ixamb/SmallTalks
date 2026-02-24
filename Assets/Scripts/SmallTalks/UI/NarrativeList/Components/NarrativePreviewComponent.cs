@@ -24,12 +24,16 @@ namespace SmallTalks.UI.NarrativeList.Components
             description.text = narrativePreviewData.Description;
             clickable.onClick.ReplaceListeners(() => narrativePreviewData.OnClick());
         }
+        
+        public void UpdateDescription(string newDescription) => description.text = newDescription;
+        public void UpdateOnClick(Action newOnClick) => clickable.onClick.ReplaceListeners(() => newOnClick());
 
         public sealed record NarrativePreviewData
         {
             public Sprite ProfilePicture { get; set; }
             public string Name { get; set; }
             public string Description { get; set; }
+            public bool Unread { get; set; }
             public Action OnClick { get; set; }
         }
     }

@@ -15,6 +15,12 @@ MonoBehaviour:
   guid: dc3fa4d6-bb05-4149-a27b-5820c185fc7f
   senderProfile:
     profilePicture: {fileID: 0}
-    name: Test name
-    description: Test Description
-  narrativeEntries: []
+    name: Jean-Mich'
+    description: "J'ai oubli\xE9 une description #grosnaze"
+  narrativeEntries:
+  - messageSender: 1
+    entry: Bien le bonjour, ceci est un test !
+  - messageSender: 0
+    entry: J'aimerais bien une glace au citron.
+  - messageSender: 1
+    entry: "\xE7a devrait pouvoir se faire :)"

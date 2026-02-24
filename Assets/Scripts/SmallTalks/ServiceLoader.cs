@@ -10,8 +10,8 @@ namespace SmallTalks
         public static void LoadServiceContainer()
         {
             var serviceContainer = Resources.Load(Path);
-            Object.Instantiate(serviceContainer);
-            Object.DontDestroyOnLoad(serviceContainer);
+            var instance = Object.Instantiate(serviceContainer);
+            Object.DontDestroyOnLoad(instance);
         }
     }
 }
