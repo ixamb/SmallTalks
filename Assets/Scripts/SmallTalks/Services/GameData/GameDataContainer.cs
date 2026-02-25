@@ -10,6 +10,6 @@ namespace SmallTalks.Services.GameData
     {
         [SerializeField] private List<NarrativeData> narrativeData;
         
-        internal List<NarrativeData> NarrativeData => narrativeData;
+        internal IEnumerable<NarrativeData> GetNarrativeData() => narrativeData;
     }
 }

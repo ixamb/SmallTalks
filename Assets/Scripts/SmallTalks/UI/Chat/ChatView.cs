@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SmallTalks.Data;
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.ChatExchange.Observers;
+using SmallTalks.Services.GameData;
 using SmallTalks.UI.Chat.Components;
 using SmallTalks.UI.Chat.Managers;
 using TheForge.Extensions;

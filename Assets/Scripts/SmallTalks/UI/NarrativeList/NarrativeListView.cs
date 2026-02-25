@@ -30,7 +30,7 @@ namespace SmallTalks.UI.NarrativeList
         // purpose of initial listing display on screen
         private void Initialize()
         {
-            var narrativeData = GameDataService.Instance.GetNarrativeData();
+            var narrativeData = GameDataService.Instance.GetNarrativeDataDictionary();
 
             foreach (var runningNarrativeKvp in LocalSaveService.Instance.GetAllNarrativeProgressSteps()
                          .Where(runningNarrativeKvp => runningNarrativeKvp.Value.Accepted)
@@ -65,8 +65,7 @@ namespace SmallTalks.UI.NarrativeList
 
         public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
         {
-            var narratives = GameDataService.Instance.GetNarrativeData();
-            var narrativeData = narratives[narrativeId];
+            var narrativeData = GameDataService.Instance.GetNarrativeData(narrativeId);
             if (narrativeData is null)
                 return;
             

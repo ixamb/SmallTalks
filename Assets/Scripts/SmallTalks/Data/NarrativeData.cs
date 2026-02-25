@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
 namespace SmallTalks.Data
 {
     [CreateAssetMenu(fileName = "Narrative Data", menuName = "Small Talks/Data/Narrative Data")]
-    public sealed class NarrativeData : ScriptableObject
+    public sealed class NarrativeData : ScriptableObject, ICloneable
     {
         [field: SerializeField]
         private string guid = string.Empty;
@@ -50,13 +52,18 @@ namespace SmallTalks.Data
                 AssetDatabase.SaveAssets();
         }
 #endif
+
+        public object Clone()
+        {
+            return Instantiate(this);
+        }
         
         public SenderProfile Sender => senderProfile;
         public List<Tag> Tags => tags;
         public List<NarrativeEntry> NarrativeEntries => narrativeEntries;
 
         [Serializable]
-        public sealed class NarrativeEntry
+        public sealed class NarrativeEntry : ICloneable
         {
             [SerializeField] private MessageSender messageSender;
             [SerializeField] private string entry;
@@ -68,10 +75,19 @@ namespace SmallTalks.Data
             {
                 Myself, Other
             }
+            
+            public object Clone()
+            {
+                return new NarrativeEntry
+                {
+                    messageSender = messageSender,
+                    entry = entry,
+                };
+            } 
         }
         
         [Serializable]
-        public sealed class SenderProfile
+        public sealed class SenderProfile : ICloneable
         {
             [SerializeField] private Sprite profilePicture;
             [SerializeField] private string name;
@@ -80,14 +96,32 @@ namespace SmallTalks.Data
             public Sprite ProfilePicture => profilePicture;
             public string Name => name;
             public string Description => description;
+
+            public object Clone()
+            {
+                return new SenderProfile
+                {
+                    profilePicture = profilePicture,
+                    name = name,
+                    description = description,
+                };
+            }
         }
 
         [Serializable]
-        public sealed class Tag
+        public sealed class Tag : ICloneable
         {
             [SerializeField] private string text;
             
             public string Text => text;
+
+            public object Clone()
+            {
+                return new Tag
+                {
+                    text = text,
+                };
+            }
         }
     }
 }

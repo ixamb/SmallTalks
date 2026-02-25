@@ -37,7 +37,7 @@ namespace SmallTalks.UI.Swipe
 
         private void Start()
         {
-            _pendingNarratives = GameDataService.Instance.GetNarrativeData();
+            _pendingNarratives = GameDataService.Instance.GetNarrativeDataDictionary();
             foreach (var narrativeProgressStep in LocalSaveService.Instance.GetAllNarrativeProgressSteps())
             {
                 _pendingNarratives.Remove(narrativeProgressStep.Key);

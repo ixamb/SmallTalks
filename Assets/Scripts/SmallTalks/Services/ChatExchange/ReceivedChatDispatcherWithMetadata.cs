@@ -18,8 +18,7 @@ namespace SmallTalks.Services.ChatExchange
 
         public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
         {
-            var narratives = GameDataService.Instance.GetNarrativeData();
-            var narrative = narratives[narrativeId];
+            var narrative = GameDataService.Instance.GetNarrativeData(narrativeId);
             if (narrative is null)
                 return;
             
