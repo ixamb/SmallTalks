@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace SmallTalks.UI.Chat.Managers
 {
-    public class GuidedChatInputManager : MonoBehaviour
+    public sealed class GuidedChatInputManager : MonoBehaviour
     {
         [SerializeField] private GameObject footer;
         [SerializeField] private GuidedChatInputComponent guidedChatInputComponent;

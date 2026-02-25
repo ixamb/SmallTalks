@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace SmallTalks.UI.Chat.Components
 {
     [RequireComponent(typeof(Button))]
-    public class KeyboardKeyComponent : MonoBehaviour
+    public sealed class KeyboardKeyComponent : MonoBehaviour
     {
         [SerializeField] private KeyType keyType = KeyType.Typing;
         

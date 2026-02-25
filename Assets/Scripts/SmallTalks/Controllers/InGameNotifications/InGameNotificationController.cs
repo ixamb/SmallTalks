@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace SmallTalks.Controllers.InGameNotifications
 {
-    public class InGameNotificationController : MonoBehaviour, IChatReceivedHandlerWithMetadata
+    public sealed class InGameNotificationController : MonoBehaviour, IChatReceivedHandlerWithMetadata
     {
         [SerializeField] private InGameNotification parentNotification;
         [SerializeField] [Range(0, 10)] private int notificationDuration = 5;

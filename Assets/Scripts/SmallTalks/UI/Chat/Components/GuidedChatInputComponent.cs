@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace SmallTalks.UI.Chat.Components
 {
-    public class GuidedChatInputComponent : MonoBehaviour, IPointerClickHandler
+    public sealed class GuidedChatInputComponent : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private TMP_Text textField;
         
