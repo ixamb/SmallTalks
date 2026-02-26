@@ -1,8 +1,10 @@
 using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Popup;
 using TheForge.Extensions;
+using TheForge.Services.Scenes;
 using TheForge.Services.Views;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace SmallTalks.UI.Settings
@@ -26,6 +28,8 @@ namespace SmallTalks.UI.Settings
                 ValidateAction = () =>
                 {
                     LocalSaveService.Instance.DeleteAllNarrativeProgress();
+                    ViewService.Instance.GetView("popup-view").HideView();
+                    SceneService.Instance.LoadSceneAsync(Constants.SceneNames.Intro, LoadSceneMode.Single);
                 }
             };
             
