@@ -42,6 +42,13 @@ namespace SmallTalks.Services.LocalSave
             return false;
         }
 
+        public int GetNarrativeProgressStep(Guid narrativeGuid)
+        {
+            return TryGetNarrativeProgress(narrativeGuid, out var progress)
+                ? progress.Progress
+                : throw new Exception($"Narrative with guid {narrativeGuid} not found");
+        }
+
         public void RegisterNewNarrativeProgress(Guid narrativeId, bool wasAccepted, bool autoSave = true)
         {
             var narratives = GetAllNarrativeProgressSteps();

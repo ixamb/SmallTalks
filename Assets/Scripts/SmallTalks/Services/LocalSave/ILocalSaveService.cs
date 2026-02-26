@@ -10,6 +10,7 @@ namespace SmallTalks.Services.LocalSave
         Dictionary<Guid, NarrativeProgressInfo> GetAllNarrativeProgressSteps();
         bool TryGetNarrativeProgress(Guid narrativeGuid, out NarrativeProgressInfo progressInfo);
         bool TryGetNarrativeProgressStep(Guid narrativeGuid, out int? progressStep);
+        int GetNarrativeProgressStep(Guid narrativeGuid);
         void RegisterNewNarrativeProgress(Guid narrativeId, bool wasAccepted, bool autoSave = true);
         void DeleteAllNarrativeProgress(bool autoSave = true);
         void DeleteNarrativeProgress(Guid narrativeId, bool autoSave = true);

@@ -36,7 +36,11 @@ namespace SmallTalks.UI.Chat
         private void Start()
         {
             ChatExchangeService.Instance.RegisterChatReceivedHandler(this);
-            OnHide += () => guidedChatInputManager.ClearGuidedMessage();
+            OnHide += () =>
+            {
+                guidedChatInputManager.ClearGuidedMessage();
+                _narrativeId = Guid.Empty;
+            };
         }
 
         public void Initialize((Sprite, string) senderData, Guid narrativeId, List<NarrativeData.NarrativeEntry> narrativeEntries, int progressStep)
@@ -114,6 +118,8 @@ namespace SmallTalks.UI.Chat
             guidedChatInputManager.SetGuidedChatInputAvailability(chatIsAvailable);
             return chatIsAvailable;
         }
+
+        public Guid GetActiveNarrativeId() => _narrativeId;
         
         #region message groups
 

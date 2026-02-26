@@ -5,9 +5,11 @@ using SmallTalks.Data;
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
+using SmallTalks.UI.Match;
 using SmallTalks.UI.NarrativeList;
 using SmallTalks.UI.Swipe.Components;
 using TheForge.Extensions;
+using TheForge.Services.Delayer;
 using TheForge.Services.Views;
 using TMPro;
 using UnityEngine;
@@ -50,11 +52,24 @@ namespace SmallTalks.UI.Swipe
         {
             LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, true);
             ChatExchangeService.Instance.ExpectSenderAnswer(_topNarrativeId, isFirstMessage: true);
+            
             ViewService.Instance.GetView<NarrativeListView>("narrative-list-view").OnNewChatReceivedHandler(_topNarrativeId, -1);
+            ShowMatchView();
             
             _pendingNarratives.Remove(_topNarrativeId);
             cardComponent.LikeSwapAnimation();
-            //InitializeNextNarrativeOnStack();
+        }
+
+        private void ShowMatchView()
+        {
+            var narrativeId = _topNarrativeId;
+            var narrative = _pendingNarratives[narrativeId];
+            ActionDelayerService.Instance.Delay(.5f, () =>
+            {
+                var matchView = ViewService.Instance.GetView<MatchView>("match-view");
+                matchView.Initialize(narrativeId, narrative.Sender.ProfilePicture, narrative.Sender.Name);
+                matchView.ShowView();
+            });
         }
 
         private void OnDislikeButtonClicked()
@@ -62,7 +77,6 @@ namespace SmallTalks.UI.Swipe
             LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, false);
             _pendingNarratives.Remove(_topNarrativeId);
             cardComponent.DislikeSwapAnimation();
-            //InitializeNextNarrativeOnStack();
         }
 
         private void InitializeNextNarrativeOnStack()

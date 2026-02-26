@@ -1,6 +1,9 @@
 using System;
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.ChatExchange.Observers;
+using SmallTalks.Services.GameData;
+using SmallTalks.Services.LocalSave;
+using SmallTalks.UI.Chat;
 using TheForge.Services.Delayer;
 using TheForge.Services.Views;
 using UnityEngine;
@@ -21,11 +24,11 @@ namespace SmallTalks.Controllers.InGameNotifications
 
         public void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
         {
-            if (ViewService.Instance.GetView("chat-view").IsVisibleAndActive())
+            var chatView = ViewService.Instance.GetView<ChatView>("chat-view");
+            if (chatView.IsVisibleAndActive() || chatView.GetActiveNarrativeId() == narrativeId)
             {
                 return;
             }
-            print("chat received on notification");
 
             parentNotification.Initialize(profilePicture, name, message);
             parentNotification.OnClick = () => OnNotificationClicked(narrativeId);
@@ -39,6 +42,16 @@ namespace SmallTalks.Controllers.InGameNotifications
         {
             ActionDelayerService.Instance.Cancel(NotificationDisappearDelayer);
             parentNotification.Hide();
+            
+            var narrative = GameDataService.Instance.GetNarrativeData(narrativeId);
+            
+            var chatView = ViewService.Instance.GetView<ChatView>("chat-view");
+            chatView.Initialize(
+                senderData: (narrative!.Sender.ProfilePicture, narrative!.Sender.Name),
+                narrativeId: narrativeId,
+                narrativeEntries: narrative.NarrativeEntries,
+                progressStep: LocalSaveService.Instance.GetNarrativeProgressStep(narrativeId));
+            chatView.ShowView();
         }
     }
 }
