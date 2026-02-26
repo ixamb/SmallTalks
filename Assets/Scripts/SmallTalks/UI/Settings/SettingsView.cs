@@ -11,13 +11,30 @@ namespace SmallTalks.UI.Settings
 {
     public sealed class SettingsView : View
     {
+        [SerializeField] private Button aboutButton;
         [SerializeField] private Button deleteDataButton;
 
         private void Start()
         {
+            aboutButton.onClick.ReplaceListeners(InitializeAboutPopup);
             deleteDataButton.onClick.ReplaceListeners(RequestDeleteNarrativeConfirm);
         }
 
+        private void InitializeAboutPopup()
+        {
+            var aboutPopup = new PopupView.PopupConfiguration
+            {
+                MainText =
+                    $"Small Talks\n" +
+                    $"Version {Application.version}",
+                ValidateButtonText = "OK"
+            };
+            
+            var popupView = ViewService.Instance.GetView<PopupView>("popup-view");
+            popupView.Initialize(aboutPopup);
+            popupView.ShowView();
+        }
+        
         private void RequestDeleteNarrativeConfirm()
         {
             var popupConfirmationConfiguration = new PopupView.PopupConfiguration
