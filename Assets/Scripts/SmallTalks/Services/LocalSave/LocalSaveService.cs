@@ -1,20 +1,23 @@
 using System;
 using System.Collections.Generic;
 using SmallTalks.Services.LocalSave.SaveObjects;
-using TheForge.Services;
 
-using ForgeLocalSaveService = TheForge.Services.LocalSave.LocalSaveService;
+using IForgeLocalSaveService = TheForge.Services.LocalSave.ILocalSaveService;
 
 namespace SmallTalks.Services.LocalSave
 {
-    public sealed class LocalSaveService : Singleton<LocalSaveService, ILocalSaveService>, ILocalSaveService
+    public sealed class LocalSaveService : ILocalSaveService
     {
-        protected override void Init()
-        { }
-
+        private readonly IForgeLocalSaveService _forgeLocalSaveService;
+        
+        public LocalSaveService(IForgeLocalSaveService forgeLocalSaveService)
+        {
+            _forgeLocalSaveService = forgeLocalSaveService;
+        }
+        
         public Dictionary<Guid, NarrativeProgressInfo> GetAllNarrativeProgressSteps()
         {
-            return ForgeLocalSaveService.Instance.Get<Dictionary<Guid, NarrativeProgressInfo>>(Constants.SaveDataEntryKey.NarrativeProgresses)
+            return _forgeLocalSaveService.Get<Dictionary<Guid, NarrativeProgressInfo>>(Constants.SaveDataEntryKey.NarrativeProgresses)
                    ?? new Dictionary<Guid, NarrativeProgressInfo>();
         }
 
@@ -91,11 +94,11 @@ namespace SmallTalks.Services.LocalSave
 
         #region forge local save functions
         
-        public void Save() => ForgeLocalSaveService.Instance.Save();
+        public void Save() => _forgeLocalSaveService.Save();
         
         private void SaveNarrativeProgressOntoForgeService(Dictionary<Guid, NarrativeProgressInfo> narratives, bool autoSave = true)
         {
-            ForgeLocalSaveService.Instance.Set(Constants.SaveDataEntryKey.NarrativeProgresses, narratives, autoSave);
+            _forgeLocalSaveService.Set(Constants.SaveDataEntryKey.NarrativeProgresses, narratives, autoSave);
         }
         
         #endregion forge local save functions

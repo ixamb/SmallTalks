@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using SmallTalks.Extensions;
 using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.LocalSave;
-using TheForge.Services;
 using TheForge.Services.Delayer;
 using Random = UnityEngine.Random;
 
 namespace SmallTalks.Services.ChatExchange
 {
-    public sealed class ChatExchangeService : Singleton<ChatExchangeService, IChatExchangeService>, IChatExchangeService
+    public sealed class ChatExchangeService : IChatExchangeService
     {
-        private readonly List<IChatReceivedHandler> _chatReceivedHandlers = new();
+        private ILocalSaveService _localSaveService;
+        private IDelayerService _delayerService;
         
-        protected override void Init() { }
+        private readonly List<IChatReceivedHandler> _chatReceivedHandlers = new();
 
+        public ChatExchangeService(ILocalSaveService localSaveService, IDelayerService delayerService)
+        {
+            _localSaveService = localSaveService;
+            _delayerService = delayerService;
+        }
+        
         public void SendMessage(Guid narrativeId)
         {
-            LocalSaveService.Instance.IncreaseNarrativeProgressStep(narrativeId, 1);
+            _localSaveService.IncreaseNarrativeProgressStep(narrativeId, 1);
             ExpectSenderAnswer(narrativeId);
         }
         
@@ -25,7 +31,7 @@ namespace SmallTalks.Services.ChatExchange
         {
             if (isFirstMessage)
             {
-                LocalSaveService.Instance.IncreaseNarrativeProgressStep(narrativeId, -1, autoSave: false);
+                _localSaveService.IncreaseNarrativeProgressStep(narrativeId, -1, autoSave: false);
             }
             
             WaitForAnswer(onWait: () =>
@@ -37,17 +43,17 @@ namespace SmallTalks.Services.ChatExchange
         private void WaitForAnswer(Action onWait)
         {
             var waitInSeconds = Random.Range(2, 5f);
-            ActionDelayerService.Instance.Delay(waitInSeconds, onWait);
+            _delayerService.Delay(waitInSeconds, onWait);
         }
 
         private void ReceiveAnswer(Guid narrativeId)
         {
-            LocalSaveService.Instance.IncreaseNarrativeProgressStep(narrativeId, 1, autoSave: false);
-            if (!LocalSaveService.Instance.TryGetNarrativeProgressStep(narrativeId, out var progressStep))
+            _localSaveService.IncreaseNarrativeProgressStep(narrativeId, 1, autoSave: false);
+            if (!_localSaveService.TryGetNarrativeProgressStep(narrativeId, out var progressStep))
                 return;
             
-            LocalSaveService.Instance.MarkNarrativeProgressNewMessageStatus(narrativeId, true, autoSave: false);
-            LocalSaveService.Instance.Save();
+            _localSaveService.MarkNarrativeProgressNewMessageStatus(narrativeId, true, autoSave: false);
+            _localSaveService.Save();
             _chatReceivedHandlers.ForEach(h => h.OnNewChatReceivedHandler(narrativeId, progressStep!.Value));
         }
 

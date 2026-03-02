@@ -11,6 +11,7 @@ using SmallTalks.UI.Chat;
 using SmallTalks.UI.NarrativeList.Components;
 using TheForge.Services.Views;
 using UnityEngine;
+using VContainer;
 
 namespace SmallTalks.UI.NarrativeList
 {
@@ -19,20 +20,32 @@ namespace SmallTalks.UI.NarrativeList
         [SerializeField] private Transform chatPreviewContent;
         [SerializeField] private NarrativePreviewComponent narrativePreviewComponentPrefab;
 
+        private IGameDataService _gameDataService;
+        private ILocalSaveService _localSaveService;
+        private IChatExchangeService _chatExchangeService;
+        
         private readonly Dictionary<Guid, NarrativePreviewComponent> _chatPreviewComponents = new();
+
+        [Inject]
+        private void Construct(IGameDataService gameDataService, ILocalSaveService localSaveService, IChatExchangeService chatExchangeService)
+        {
+            _gameDataService = gameDataService;
+            _localSaveService = localSaveService;
+            _chatExchangeService = chatExchangeService;
+        }
         
         private void Start()
         {
             Initialize();
-            ChatExchangeService.Instance.RegisterChatReceivedHandler(this);
+            _chatExchangeService.RegisterChatReceivedHandler(this);
         }
 
         // purpose of initial listing display on screen
         private void Initialize()
         {
-            var narrativeData = GameDataService.Instance.GetNarrativeDataDictionary();
+            var narrativeData = _gameDataService.GetNarrativeDataDictionary();
 
-            foreach (var runningNarrativeKvp in LocalSaveService.Instance.GetAllNarrativeProgressSteps()
+            foreach (var runningNarrativeKvp in _localSaveService.GetAllNarrativeProgressSteps()
                          .Where(runningNarrativeKvp => runningNarrativeKvp.Value.Accepted)
                          .OrderBy(runningNarrativeKvp => runningNarrativeKvp.Value.LastUpdate))
             {
@@ -56,7 +69,7 @@ namespace SmallTalks.UI.NarrativeList
                         
                         ShowChatView(data, kvp.Value.Progress);
                         if (kvp.Value.HasNewMessage)
-                            LocalSaveService.Instance.MarkNarrativeProgressNewMessageStatus(kvp.Key, false);
+                            _localSaveService.MarkNarrativeProgressNewMessageStatus(kvp.Key, false);
                     }
                 });
                 _chatPreviewComponents.TryAdd(kvp.Key, narrativePreview);
@@ -65,7 +78,7 @@ namespace SmallTalks.UI.NarrativeList
 
         public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
         {
-            var narrativeData = GameDataService.Instance.GetNarrativeData(narrativeId);
+            var narrativeData = _gameDataService.GetNarrativeData(narrativeId);
             if (narrativeData is null)
                 return;
             
@@ -97,11 +110,15 @@ namespace SmallTalks.UI.NarrativeList
             }
         }
         
-        private static void ShowChatView(NarrativeData narrative, int progress)
+        private void ShowChatView(NarrativeData narrative, int progress)
         {
-            var chatView = ViewService.Instance.GetView<ChatView>("chat-view");
-            chatView.Initialize((narrative.Sender.ProfilePicture, narrative.Sender.Name), narrative.Guid, narrative.NarrativeEntries, progress);
-            chatView.ShowView();
+            var chatView = ViewService.GetView<ChatView>("chat-view");
+            if (chatView)
+            {
+                chatView.Initialize((narrative.Sender.ProfilePicture, narrative.Sender.Name), narrative.Guid,
+                    narrative.NarrativeEntries, progress);
+                chatView.ShowView();
+            }
         }
     }
 }

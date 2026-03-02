@@ -6,9 +6,9 @@
       "source": "git",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.2.2",
-        "com.unity.mobile.notifications": "2.4.3"
+        "jp.hadashikick.vcontainer": "1.17.0"
       },
-      "hash": "fc9ea081c86b2ae0b80c9e8a2510a3811127a200"
+      "hash": "4b4c6203e3bbbf10e85043a86df77b0da91f1edb"
     },
     "com.unity.2d.animation": {
       "version": "12.0.2",
@@ -167,15 +167,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.mobile.notifications": {
-      "version": "2.4.3",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.androidjni": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.multiplayer.center": {
       "version": "1.0.0",
       "depth": 0,
@@ -307,6 +298,13 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "jp.hadashikick.vcontainer": {
+      "version": "1.17.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

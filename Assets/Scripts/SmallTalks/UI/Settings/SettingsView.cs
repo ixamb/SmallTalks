@@ -6,6 +6,7 @@ using TheForge.Services.Views;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using VContainer;
 
 namespace SmallTalks.UI.Settings
 {
@@ -14,6 +15,16 @@ namespace SmallTalks.UI.Settings
         [SerializeField] private Button aboutButton;
         [SerializeField] private Button deleteDataButton;
 
+        private ISceneService _sceneService;
+        private ILocalSaveService _localSaveService;
+        
+        [Inject]
+        private void Construct(ISceneService sceneService, ILocalSaveService localSaveService)
+        {
+            _sceneService = sceneService;
+            _localSaveService = localSaveService;
+        }
+        
         private void Start()
         {
             aboutButton.onClick.ReplaceListeners(InitializeAboutPopup);
@@ -29,10 +40,13 @@ namespace SmallTalks.UI.Settings
                     $"Version {Application.version}",
                 ValidateButtonText = "OK"
             };
-            
-            var popupView = ViewService.Instance.GetView<PopupView>("popup-view");
-            popupView.Initialize(aboutPopup);
-            popupView.ShowView();
+
+            var popupView = ViewService.GetView<PopupView>("popup-view");
+            if (popupView)
+            {
+                popupView.Initialize(aboutPopup);
+                popupView.ShowView();
+            }
         }
         
         private void RequestDeleteNarrativeConfirm()
@@ -44,15 +58,18 @@ namespace SmallTalks.UI.Settings
                 ValidateButtonText = "Supprimer",
                 ValidateAction = () =>
                 {
-                    LocalSaveService.Instance.DeleteAllNarrativeProgress();
-                    ViewService.Instance.GetView("popup-view").HideView();
-                    SceneService.Instance.LoadSceneAsync(Constants.SceneNames.Intro, LoadSceneMode.Single);
+                    _localSaveService.DeleteAllNarrativeProgress();
+                    ViewService.GetView("popup-view")?.HideView();
+                    _sceneService.LoadSceneAsync(Constants.SceneNames.Intro, LoadSceneMode.Single);
                 }
             };
             
-            var popupView = ViewService.Instance.GetView<PopupView>("popup-view");
-            popupView.Initialize(popupConfirmationConfiguration);
-            popupView.ShowView();
+            var popupView = ViewService.GetView<PopupView>("popup-view");
+            if (popupView)
+            {
+                popupView.Initialize(popupConfirmationConfiguration);
+                popupView.ShowView();
+            }
         }
     }
 }

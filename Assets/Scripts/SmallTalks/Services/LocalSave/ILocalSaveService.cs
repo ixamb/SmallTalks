@@ -5,7 +5,7 @@ using TheForge.Services;
 
 namespace SmallTalks.Services.LocalSave
 {
-    public interface ILocalSaveService : ISingleton
+    public interface ILocalSaveService
     {
         Dictionary<Guid, NarrativeProgressInfo> GetAllNarrativeProgressSteps();
         bool TryGetNarrativeProgress(Guid narrativeGuid, out NarrativeProgressInfo progressInfo);

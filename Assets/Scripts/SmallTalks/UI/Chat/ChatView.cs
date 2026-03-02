@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using SmallTalks.Data;
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.ChatExchange.Observers;
-using SmallTalks.Services.GameData;
 using SmallTalks.UI.Chat.Components;
 using SmallTalks.UI.Chat.Managers;
 using TheForge.Extensions;
@@ -11,6 +10,7 @@ using TheForge.Services.Views;
 using TheForge.Utils;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace SmallTalks.UI.Chat
 {
@@ -27,15 +27,23 @@ namespace SmallTalks.UI.Chat
         [Header("Guided chat input")]
         [SerializeField] private GuidedChatInputManager guidedChatInputManager;
         
+        private IChatExchangeService _chatExchangeService;
+        
         private readonly List<GameObject> _messageGroups = new();
         
         // Cached narrative related data
         private Guid _narrativeId;
         private List<NarrativeData.NarrativeEntry> _narrativeEntries = new();
 
+        [Inject]
+        private void Construct(IChatExchangeService chatExchangeService)
+        {
+            _chatExchangeService = chatExchangeService;
+        }
+
         private void Start()
         {
-            ChatExchangeService.Instance.RegisterChatReceivedHandler(this);
+            _chatExchangeService.RegisterChatReceivedHandler(this);
             OnHide += () =>
             {
                 guidedChatInputManager.ClearGuidedMessage();
@@ -107,7 +115,7 @@ namespace SmallTalks.UI.Chat
 
         private void SendMessage(Guid narrativeId, string message)
         {
-            ChatExchangeService.Instance.SendMessage(narrativeId);
+            _chatExchangeService.SendMessage(narrativeId);
             var messageGroup = GenerateEmptyMessageGroup(NarrativeData.NarrativeEntry.MessageSender.Myself);
             AppendMessageToMessageGroup(messageGroup, NarrativeData.NarrativeEntry.MessageSender.Myself, message);
         }

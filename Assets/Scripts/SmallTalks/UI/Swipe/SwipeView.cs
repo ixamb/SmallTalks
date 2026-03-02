@@ -14,6 +14,7 @@ using TheForge.Services.Views;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace SmallTalks.UI.Swipe
 {
@@ -26,10 +27,25 @@ namespace SmallTalks.UI.Swipe
         [Header("Interaction fields")]
         [SerializeField] private Button likeButton;
         [SerializeField] private Button dislikeButton;
+
+        private IGameDataService _gameDataService;
+        private ILocalSaveService _localSaveService;
+        private IChatExchangeService _chatExchangeService;
+        private IDelayerService _delayerService;
         
         private Dictionary<Guid,NarrativeData> _pendingNarratives = new();
         private Guid _topNarrativeId;
 
+        [Inject]
+        private void Construct(IGameDataService gameDataService, ILocalSaveService localSaveService,
+            IChatExchangeService chatExchangeService, IDelayerService delayerService)
+        {
+            _gameDataService = gameDataService;
+            _localSaveService = localSaveService;
+            _chatExchangeService = chatExchangeService;
+            _delayerService = delayerService;
+        }
+        
         protected override void Awake()
         {
             base.Awake();
@@ -39,8 +55,8 @@ namespace SmallTalks.UI.Swipe
 
         private void Start()
         {
-            _pendingNarratives = GameDataService.Instance.GetNarrativeDataDictionary();
-            foreach (var narrativeProgressStep in LocalSaveService.Instance.GetAllNarrativeProgressSteps())
+            _pendingNarratives = _gameDataService.GetNarrativeDataDictionary();
+            foreach (var narrativeProgressStep in _localSaveService.GetAllNarrativeProgressSteps())
             {
                 _pendingNarratives.Remove(narrativeProgressStep.Key);
             }
@@ -50,10 +66,10 @@ namespace SmallTalks.UI.Swipe
 
         private void OnLikeButtonClicked()
         {
-            LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, true);
-            ChatExchangeService.Instance.ExpectSenderAnswer(_topNarrativeId, isFirstMessage: true);
+            _localSaveService.RegisterNewNarrativeProgress(_topNarrativeId, true);
+            _chatExchangeService.ExpectSenderAnswer(_topNarrativeId, isFirstMessage: true);
             
-            ViewService.Instance.GetView<NarrativeListView>("narrative-list-view").OnNewChatReceivedHandler(_topNarrativeId, -1);
+            ViewService.GetView<NarrativeListView>("narrative-list-view")?.OnNewChatReceivedHandler(_topNarrativeId, -1);
             ShowMatchView();
             
             _pendingNarratives.Remove(_topNarrativeId);
@@ -64,17 +80,20 @@ namespace SmallTalks.UI.Swipe
         {
             var narrativeId = _topNarrativeId;
             var narrative = _pendingNarratives[narrativeId];
-            ActionDelayerService.Instance.Delay(.5f, () =>
+            _delayerService.Delay(.5f, () =>
             {
-                var matchView = ViewService.Instance.GetView<MatchView>("match-view");
-                matchView.Initialize(narrativeId, narrative.Sender.ProfilePicture, narrative.Sender.Name);
-                matchView.ShowView();
+                var matchView = ViewService.GetView<MatchView>("match-view");
+                if (matchView)
+                {
+                    matchView.Initialize(narrativeId, narrative.Sender.ProfilePicture, narrative.Sender.Name);
+                    matchView.ShowView();
+                }
             });
         }
 
         private void OnDislikeButtonClicked()
         {
-            LocalSaveService.Instance.RegisterNewNarrativeProgress(_topNarrativeId, false);
+            _localSaveService.RegisterNewNarrativeProgress(_topNarrativeId, false);
             _pendingNarratives.Remove(_topNarrativeId);
             cardComponent.DislikeSwapAnimation();
         }

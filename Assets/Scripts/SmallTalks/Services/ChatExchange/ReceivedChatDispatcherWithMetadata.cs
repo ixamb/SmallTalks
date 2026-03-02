@@ -4,21 +4,26 @@ using SmallTalks.Extensions;
 using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.GameData;
 using UnityEngine;
+using VContainer;
 
 namespace SmallTalks.Services.ChatExchange
 {
     public sealed class ReceivedChatDispatcherWithMetadata : MonoBehaviour, IChatReceivedHandler
     {
+        private IGameDataService _gameDataService;
+        
         private static readonly List<IChatReceivedHandlerWithMetadata> HandlersWithMetadata = new();
 
-        private void Start()
+        [Inject]
+        private void Construct(IChatExchangeService chatExchangeService, IGameDataService gameDataService)
         {
-            ChatExchangeService.Instance.RegisterChatReceivedHandler(this);
+            _gameDataService = gameDataService;
+            chatExchangeService.RegisterChatReceivedHandler(this);
         }
 
         public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
         {
-            var narrative = GameDataService.Instance.GetNarrativeData(narrativeId);
+            var narrative = _gameDataService.GetNarrativeData(narrativeId);
             if (narrative is null)
                 return;
             

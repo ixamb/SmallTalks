@@ -6,7 +6,7 @@ using TheForge.Services;
 
 namespace SmallTalks.Services.GameData
 {
-    public interface IGameDataService : ISingleton
+    public interface IGameDataService
     {
         Dictionary<Guid, NarrativeData> GetNarrativeDataDictionary();
         [CanBeNull] NarrativeData GetNarrativeData(Guid narrativeId);

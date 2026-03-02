@@ -3,6 +3,8 @@ using JetBrains.Annotations;
 using SmallTalks.UI.Chat.Components;
 using TheForge.Extensions;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
 
 namespace SmallTalks.UI.Chat.Managers
@@ -19,7 +21,7 @@ namespace SmallTalks.UI.Chat.Managers
         
         private static readonly int KeyboardUp = Animator.StringToHash("Keyboard Up");
         private static readonly int KeyboardDown = Animator.StringToHash("Keyboard Down");
-
+        
         private void Start()
         {
             foreach (var keyboardKeyComponent in keyboard.GetComponentsInChildren<KeyboardKeyComponent>())

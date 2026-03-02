@@ -7,6 +7,7 @@ using TheForge.Services.Views;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace SmallTalks.UI.Match
 {
@@ -17,19 +18,28 @@ namespace SmallTalks.UI.Match
         [SerializeField] private Button navigateToChatButton;
         [SerializeField] private Button closeButton;
         
+        private ILocalSaveService _localSaveService;
+        private IGameDataService _gameDataService;
+        
+        [Inject]
+        private void Construct(ILocalSaveService localSaveService, IGameDataService gameDataService)
+        {
+            _localSaveService = localSaveService;
+            _gameDataService = gameDataService;
+        }
+        
         public void Initialize(Guid narrativeId, Sprite profileSprite, string senderName)
         {
             matchProfilePicture.sprite = profileSprite;
             matchName.text = senderName;
-            
             navigateToChatButton.onClick.ReplaceListeners(() =>
             {
-                var chatView = ViewService.Instance.GetView<ChatView>("chat-view");
+                var chatView = ViewService.GetView<ChatView>("chat-view");
                 chatView.Initialize(
                     senderData: (profileSprite, senderName),
                     narrativeId: narrativeId,
-                    narrativeEntries: GameDataService.Instance.GetNarrativeDataDictionary()[narrativeId].NarrativeEntries,
-                    progressStep: LocalSaveService.Instance.GetNarrativeProgressStep(narrativeId));
+                    narrativeEntries: _gameDataService.GetNarrativeDataDictionary()[narrativeId].NarrativeEntries,
+                    progressStep: _localSaveService.GetNarrativeProgressStep(narrativeId));
                 chatView.ShowView();
                 HideView();
             });
