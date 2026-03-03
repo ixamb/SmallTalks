@@ -56,7 +56,7 @@ namespace SmallTalks.UI.Chat
             GameObject activeChatGroup = null;
             for (var i = 0; i < progressStep+1; i++)
             {
-                var narrativeEntry = _chatPresenter.GetNarrativeData().NarrativeEntries[i];
+                var narrativeEntry = _chatPresenter.GetNarrativeEntry(i);
                 
                 if (lastSender is null)
                 {
@@ -78,9 +78,9 @@ namespace SmallTalks.UI.Chat
             var available = UpdateGuidedChatInputAvailability(progressStep);
             if (available)
             {
-                var message = _chatPresenter.GetNarrativeData().NarrativeEntries[progressStep + 1].Entry;
+                var message = _chatPresenter.GetNarrativeEntry(progressStep + 1).Entry;
                 guidedChatInputManager.InitializeNewGuidedMessage(message);
-                guidedChatInputManager.OnMessageSentRequest = () => { SendMessage(_chatPresenter.GetNarrativeData().Guid, message); };
+                guidedChatInputManager.OnMessageSentRequest = () => { SendMessage(_chatPresenter.NarrativeId!.Value, message); };
             }
         }
         
@@ -89,16 +89,16 @@ namespace SmallTalks.UI.Chat
             if (!IsVisibleAndActive())
                 return;
             
-            if (narrativeId != _chatPresenter.GetNarrativeData().Guid)
+            if (narrativeId != _chatPresenter.NarrativeId)
                 return;
 
             var messageGroup = GenerateEmptyMessageGroup(NarrativeData.NarrativeEntry.MessageSender.Other);
-            AppendMessageToMessageGroup(messageGroup, _chatPresenter.GetNarrativeData().NarrativeEntries[progressStep].Sender, _chatPresenter.GetNarrativeData().NarrativeEntries[progressStep].Entry);
+            AppendMessageToMessageGroup(messageGroup, _chatPresenter.GetNarrativeEntry(progressStep).Sender, _chatPresenter.GetNarrativeEntry(progressStep).Entry);
             
             var available = UpdateGuidedChatInputAvailability(progressStep);
             if (available)
             {
-                var message = _chatPresenter.GetNarrativeData().NarrativeEntries[progressStep + 1].Entry;
+                var message = _chatPresenter.GetNarrativeEntry(progressStep + 1).Entry;
                 guidedChatInputManager.InitializeNewGuidedMessage(message);
                 guidedChatInputManager.OnMessageSentRequest = () => { SendMessage(narrativeId, message); };
             }

@@ -12,8 +12,10 @@ namespace SmallTalks.UI.Chat
         void ReplaceReceivedChatMessageEvent(Action<Guid, int> onNewChatMessageReceivedEvent);
         void Clear();
         void SendMessageRequest();
-        NarrativeData GetNarrativeData();
         bool ChatIsAvailable(int progressStep);
+
+        Guid? NarrativeId { get; }
+        NarrativeData.NarrativeEntry GetNarrativeEntry(int index);
     }
     
     public sealed class ChatPresenter : IChatPresenter, INewChatMessageObserver
@@ -58,8 +60,9 @@ namespace SmallTalks.UI.Chat
             return false;
         }
         
-        public NarrativeData GetNarrativeData() => _narrativeData;
-
+        public Guid? NarrativeId => _narrativeData?.Guid;
+        public NarrativeData.NarrativeEntry GetNarrativeEntry(int index) => _narrativeData?.NarrativeEntries[index];
+        
         // observer function
         public void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
         {

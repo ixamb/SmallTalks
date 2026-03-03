@@ -46,8 +46,7 @@ namespace SmallTalks.Controllers.InGameNotifications
 
         public void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
         {
-            var chatView = _viewService.GetView<ChatView>();
-            if (_chatPresenter.GetNarrativeData() is not null && _chatPresenter.GetNarrativeData()!.Guid == narrativeId)
+            if (_chatPresenter.NarrativeId is not null && _chatPresenter.NarrativeId == narrativeId)
             {
                 return;
             }

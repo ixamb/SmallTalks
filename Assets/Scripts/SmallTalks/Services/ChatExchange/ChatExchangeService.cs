@@ -5,7 +5,6 @@ using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Swipe;
 using TheForge.Services.Delayer;
-using Random = UnityEngine.Random;
 
 namespace SmallTalks.Services.ChatExchange
 {
@@ -53,7 +52,7 @@ namespace SmallTalks.Services.ChatExchange
 
         private void WaitForAnswer(Action onWait)
         {
-            var waitInSeconds = Random.Range(2, 5f);
+            var waitInSeconds = UnityEngine.Random.Range(2, 5f);
             _delayerService.Delay(waitInSeconds, onWait);
         }
 
