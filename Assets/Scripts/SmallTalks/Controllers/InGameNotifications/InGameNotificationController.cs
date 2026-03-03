@@ -17,6 +17,7 @@ namespace SmallTalks.Controllers.InGameNotifications
         private IDelayerService _delayerService;
         private IGameDataService _gameDataService;
         private ILocalSaveService _localSaveService;
+        private IChatPresenter _chatPresenter;
         
         [SerializeField] private InGameNotification parentNotification;
         [SerializeField] [Range(0, 10)] private int notificationDuration = 5;
@@ -28,12 +29,14 @@ namespace SmallTalks.Controllers.InGameNotifications
             IViewService viewService,
             IDelayerService delayerService,
             IGameDataService gameDataService,
-            ILocalSaveService localSaveService)
+            ILocalSaveService localSaveService,
+            IChatPresenter chatPresenter)
         {
             _viewService = viewService;
             _delayerService = delayerService;
             _gameDataService = gameDataService;
             _localSaveService = localSaveService;
+            _chatPresenter = chatPresenter;
         }
         
         private void Start()
@@ -44,7 +47,7 @@ namespace SmallTalks.Controllers.InGameNotifications
         public void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
         {
             var chatView = _viewService.GetView<ChatView>();
-            if (!chatView || chatView.IsVisibleAndActive() || (chatView.ActiveNarrativeData() is not null && chatView.ActiveNarrativeData()!.Guid == narrativeId))
+            if (_chatPresenter.GetNarrativeData() is not null && _chatPresenter.GetNarrativeData()!.Guid == narrativeId)
             {
                 return;
             }

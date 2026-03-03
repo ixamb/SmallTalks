@@ -1,6 +1,7 @@
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
+using SmallTalks.UI.Chat;
 using SmallTalks.UI.NarrativeList;
 using SmallTalks.UI.Swipe;
 using TheForge.Services.Delayer;
@@ -27,6 +28,7 @@ namespace SmallTalks.Services
             
             builder.Register<INarrativeStackManager, NarrativeStackManager>(Lifetime.Singleton);
             builder.Register<INarrativePreviewListPresenter, NarrativePreviewListPresenter>(Lifetime.Singleton);
+            builder.Register<IChatPresenter, ChatPresenter>(Lifetime.Singleton);
         }
     }
 }

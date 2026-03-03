@@ -14,6 +14,7 @@ namespace SmallTalks.UI.NarrativeList.Components
         [SerializeField] private new TMP_Text name;
         [SerializeField] private TMP_Text description;
         [SerializeField] private Button clickable;
+        [SerializeField] private GameObject unreadIndicator;
         [Space]
         [SerializeField] private Transform tagContent;
         [SerializeField] private TagComponent tagComponentPrefab;
@@ -25,12 +26,14 @@ namespace SmallTalks.UI.NarrativeList.Components
             description.text = narrativePreviewData.Description;
             narrativePreviewData.Tags.ForEach(textTag => Instantiate(tagComponentPrefab, tagContent).Initialize(textTag));
             clickable.onClick.ReplaceListeners(() => narrativePreviewData.OnClick());
+            unreadIndicator.SetActive(narrativePreviewData.Unread);
             
             LayoutRebuilder.ForceRebuildLayoutImmediate(tagContent.GetComponent<RectTransform>());
         }
         
         public void UpdateDescription(string newDescription) => description.text = newDescription;
         public void UpdateOnClick(Action newOnClick) => clickable.onClick.ReplaceListeners(() => newOnClick());
+        public void UpdateUnreadIndicator(bool newUnread) => unreadIndicator.SetActive(newUnread);
 
         public sealed record NarrativePreviewData
         {

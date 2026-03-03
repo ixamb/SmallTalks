@@ -73,7 +73,8 @@ namespace SmallTalks.UI.NarrativeList
 
         private void MarkChatEntryAsRead(Guid narrativeId)
         {
-            //_chatPreviewComponents[narrativeId]?. // TODO: do something here!
+            if (_chatPreviewComponents.TryGetValue(narrativeId, out var spawnedNarrativePreview))
+                spawnedNarrativePreview.UpdateUnreadIndicator(false);
         }
 
         private void OnNewChatReceivedHandler(NarrativePreviewListPresenter.ActiveNarrativeEntryPreview updatedNarrativePreview, string message)
@@ -86,6 +87,7 @@ namespace SmallTalks.UI.NarrativeList
                     ShowChatView(updatedNarrativePreview.Data, updatedNarrativePreview.ProgressStep);
                     _narrativePreviewListPresenter.MarkMessageAsRead(updatedNarrativePreview.Data.Guid);
                 });
+                spawnedNarrativePreview.UpdateUnreadIndicator(true);
             }
         }
         

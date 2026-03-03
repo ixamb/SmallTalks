@@ -48,7 +48,8 @@ namespace SmallTalks.UI.NarrativeList
                 if (!narrativeData.TryGetValue(runningNarrativeKvp.Key, out var data))
                     continue;
 
-                _activeNarrativeData.Add(data.Guid, ActiveNarrativeEntryPreview.FromData(data, runningNarrativeKvp.Value.Progress));
+                _activeNarrativeData.Add(data.Guid,
+                    ActiveNarrativeEntryPreview.FromData(data, runningNarrativeKvp.Value.Progress, runningNarrativeKvp.Value.HasNewMessage));
             }
         }
         
@@ -63,7 +64,8 @@ namespace SmallTalks.UI.NarrativeList
             if (_activeNarrativeData.Contains(narrativeId))
                 return;
             
-            var newEntryPreview = ActiveNarrativeEntryPreview.FromData(_gameDataService.GetNarrativeData(narrativeId), 0);
+            var newEntryPreview = ActiveNarrativeEntryPreview.FromData(_gameDataService.GetNarrativeData(narrativeId), 0, true);
+            newEntryPreview.HasNewMessage = true;
             _activeNarrativeData.Insert(0, narrativeId, newEntryPreview);
             OnNewNarrativeAdded?.Invoke(newEntryPreview);
         }
@@ -83,6 +85,7 @@ namespace SmallTalks.UI.NarrativeList
             
             var entry = (ActiveNarrativeEntryPreview)_activeNarrativeData[narrativeId];
             entry.ProgressStep = progressStep;
+            entry.HasNewMessage = true;
             OnChatMessageReceived?.Invoke(entry, entry.Data.NarrativeEntries[progressStep].Entry);
         }
 
@@ -92,11 +95,12 @@ namespace SmallTalks.UI.NarrativeList
             public bool HasNewMessage { get; internal set; }
             public NarrativeData Data { get; private set; }
             
-            public static ActiveNarrativeEntryPreview FromData(NarrativeData narrativeData, int progressStep)
+            public static ActiveNarrativeEntryPreview FromData(NarrativeData narrativeData, int progressStep, bool hasNewMessage)
             {
                 return new ActiveNarrativeEntryPreview
                 {
                     ProgressStep = progressStep,
+                    HasNewMessage = hasNewMessage,
                     Data = narrativeData,
                 };
             }
