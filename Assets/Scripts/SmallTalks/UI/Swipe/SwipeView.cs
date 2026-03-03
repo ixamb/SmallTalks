@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using SmallTalks.Data;
-using SmallTalks.Services.ChatExchange;
-using SmallTalks.Services.GameData;
-using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Match;
 using SmallTalks.UI.NarrativeList;
 using SmallTalks.UI.Swipe.Components;
@@ -28,21 +22,13 @@ namespace SmallTalks.UI.Swipe
         [SerializeField] private Button likeButton;
         [SerializeField] private Button dislikeButton;
 
-        private IGameDataService _gameDataService;
-        private ILocalSaveService _localSaveService;
-        private IChatExchangeService _chatExchangeService;
+        private INarrativeStackManager _narrativeStackManager;
         private IDelayerService _delayerService;
-        
-        private Dictionary<Guid,NarrativeData> _pendingNarratives = new();
-        private Guid _topNarrativeId;
 
         [Inject]
-        private void Construct(IGameDataService gameDataService, ILocalSaveService localSaveService,
-            IChatExchangeService chatExchangeService, IDelayerService delayerService)
+        private void Construct(INarrativeStackManager narrativeStackManager, IDelayerService delayerService)
         {
-            _gameDataService = gameDataService;
-            _localSaveService = localSaveService;
-            _chatExchangeService = chatExchangeService;
+            _narrativeStackManager = narrativeStackManager;
             _delayerService = delayerService;
         }
         
@@ -51,41 +37,25 @@ namespace SmallTalks.UI.Swipe
             base.Awake();
             likeButton.onClick.ReplaceListeners(OnLikeButtonClicked);
             dislikeButton.onClick.ReplaceListeners(OnDislikeButtonClicked);
-        }
-
-        private void Start()
-        {
-            _pendingNarratives = _gameDataService.GetNarrativeDataDictionary();
-            foreach (var narrativeProgressStep in _localSaveService.GetAllNarrativeProgressSteps())
-            {
-                _pendingNarratives.Remove(narrativeProgressStep.Key);
-            }
             cardComponent.OnSwapAnimation = InitializeNextNarrativeOnStack;
             InitializeNextNarrativeOnStack();
         }
 
         private void OnLikeButtonClicked()
         {
-            _localSaveService.RegisterNewNarrativeProgress(_topNarrativeId, true);
-            _chatExchangeService.ExpectSenderAnswer(_topNarrativeId, isFirstMessage: true);
-            
-            ViewService.GetView<NarrativeListView>("narrative-list-view")?.OnNewChatReceivedHandler(_topNarrativeId, -1);
-            ShowMatchView();
-            
-            _pendingNarratives.Remove(_topNarrativeId);
+            var narrative = _narrativeStackManager.AcceptNarrative();
+            ShowMatchView(narrative);
             cardComponent.LikeSwapAnimation();
         }
 
-        private void ShowMatchView()
+        private void ShowMatchView(NarrativeData narrativeData)
         {
-            var narrativeId = _topNarrativeId;
-            var narrative = _pendingNarratives[narrativeId];
             _delayerService.Delay(.5f, () =>
             {
                 var matchView = ViewService.GetView<MatchView>("match-view");
                 if (matchView)
                 {
-                    matchView.Initialize(narrativeId, narrative.Sender.ProfilePicture, narrative.Sender.Name);
+                    matchView.Initialize(narrativeData.Guid, narrativeData.Sender.ProfilePicture, narrativeData.Sender.Name);
                     matchView.ShowView();
                 }
             });
@@ -93,27 +63,24 @@ namespace SmallTalks.UI.Swipe
 
         private void OnDislikeButtonClicked()
         {
-            _localSaveService.RegisterNewNarrativeProgress(_topNarrativeId, false);
-            _pendingNarratives.Remove(_topNarrativeId);
+            _narrativeStackManager.RefuseNarrative();
             cardComponent.DislikeSwapAnimation();
         }
 
         private void InitializeNextNarrativeOnStack()
         {
-            var remainingPendingNarrative = _pendingNarratives.Any();
-            cardComponent.gameObject.SetActive(remainingPendingNarrative);
-            emptyDescription.gameObject.SetActive(!remainingPendingNarrative);
+            var nextPendingNarrative = _narrativeStackManager.GetNextNarrative();
+            cardComponent.gameObject.SetActive(nextPendingNarrative is not null);
+            emptyDescription.gameObject.SetActive(nextPendingNarrative is null);
 
-            if (!remainingPendingNarrative)
+            if (nextPendingNarrative is null)
             {
                 likeButton.interactable = false;
                 dislikeButton.interactable = false;
                 return;
             }
 
-            var topNarrative = _pendingNarratives.First();
-            cardComponent.Initialize(topNarrative.Value.Sender.ProfilePicture, topNarrative.Value.Sender.Name, topNarrative.Value.Sender.Description);
-            _topNarrativeId = topNarrative.Key;
+            cardComponent.Initialize(nextPendingNarrative.Sender.ProfilePicture, nextPendingNarrative.Sender.Name, nextPendingNarrative.Sender.Description);
         }
     }
 }

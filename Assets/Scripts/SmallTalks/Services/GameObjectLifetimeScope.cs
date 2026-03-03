@@ -4,7 +4,7 @@ using VContainer.Unity;
 
 namespace SmallTalks.Services
 {
-    public sealed class ViewLifetimeScope : LifetimeScope
+    public sealed class GameObjectLifetimeScope : LifetimeScope
     {
         protected override void Configure(IContainerBuilder builder)
         {

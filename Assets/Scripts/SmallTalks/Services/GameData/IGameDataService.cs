@@ -10,5 +10,6 @@ namespace SmallTalks.Services.GameData
     {
         Dictionary<Guid, NarrativeData> GetNarrativeDataDictionary();
         [CanBeNull] NarrativeData GetNarrativeData(Guid narrativeId);
+        List<NarrativeData> GetNarrativeData();
     }
 }

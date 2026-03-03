@@ -35,13 +35,14 @@ namespace SmallTalks.UI.Match
             navigateToChatButton.onClick.ReplaceListeners(() =>
             {
                 var chatView = ViewService.GetView<ChatView>("chat-view");
-                chatView.Initialize(
-                    senderData: (profileSprite, senderName),
-                    narrativeId: narrativeId,
-                    narrativeEntries: _gameDataService.GetNarrativeDataDictionary()[narrativeId].NarrativeEntries,
-                    progressStep: _localSaveService.GetNarrativeProgressStep(narrativeId));
-                chatView.ShowView();
-                HideView();
+                if (chatView)
+                {
+                    chatView.Initialize(
+                        narrativeData: _gameDataService.GetNarrativeData(narrativeId),
+                        progressStep: _localSaveService.GetNarrativeProgressStep(narrativeId));
+                    chatView.ShowView();
+                    HideView();
+                }
             });
             
             closeButton.onClick.ReplaceListeners(HideView);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using SmallTalks.Data;
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.ChatExchange.Observers;
@@ -14,7 +15,7 @@ using VContainer;
 
 namespace SmallTalks.UI.Chat
 {
-    public sealed class ChatView : View, IChatReceivedHandler
+    public sealed class ChatView : View, INewChatMessageObserver
     {
         [Header("View references")]
         [SerializeField] private ChatHeaderComponent chatHeader;
@@ -32,8 +33,7 @@ namespace SmallTalks.UI.Chat
         private readonly List<GameObject> _messageGroups = new();
         
         // Cached narrative related data
-        private Guid _narrativeId;
-        private List<NarrativeData.NarrativeEntry> _narrativeEntries = new();
+        [CanBeNull] private NarrativeData _narrativeData;
 
         [Inject]
         private void Construct(IChatExchangeService chatExchangeService)
@@ -43,29 +43,28 @@ namespace SmallTalks.UI.Chat
 
         private void Start()
         {
-            _chatExchangeService.RegisterChatReceivedHandler(this);
+            _chatExchangeService.RegisterNewChatMessageObserver(this);
             OnHide += () =>
             {
                 guidedChatInputManager.ClearGuidedMessage();
-                _narrativeId = Guid.Empty;
+                _narrativeData = null;
             };
         }
 
-        public void Initialize((Sprite, string) senderData, Guid narrativeId, List<NarrativeData.NarrativeEntry> narrativeEntries, int progressStep)
+        public void Initialize(NarrativeData narrativeData, int progressStep)
         {
-            chatHeader.Initialize(senderData.Item1, senderData.Item2);
+            chatHeader.Initialize(narrativeData.Sender.ProfilePicture, narrativeData.Sender.Name);
             
             NarrativeData.NarrativeEntry.MessageSender? lastSender = null;
             GameObject activeChatGroup = null;
             
-            _narrativeId = narrativeId;
-            _narrativeEntries = narrativeEntries;
+            _narrativeData = narrativeData;
             
             _messageGroups.DestroyAndClear();
             
             for (var i = 0; i < progressStep+1; i++)
             {
-                var narrativeEntry = _narrativeEntries[i];
+                var narrativeEntry = _narrativeData.NarrativeEntries[i];
                 
                 if (lastSender is null)
                 {
@@ -87,27 +86,27 @@ namespace SmallTalks.UI.Chat
             var available = UpdateGuidedChatInputAvailability(progressStep);
             if (available)
             {
-                var message = _narrativeEntries[progressStep + 1].Entry;
+                var message = _narrativeData.NarrativeEntries[progressStep + 1].Entry;
                 guidedChatInputManager.InitializeNewGuidedMessage(message);
-                guidedChatInputManager.OnMessageSentRequest = () => { SendMessage(narrativeId, message); };
+                guidedChatInputManager.OnMessageSentRequest = () => { SendMessage(_narrativeData.Guid, message); };
             }
         }
         
-        public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
+        public void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
         {
-            if (narrativeId != _narrativeId)
-                return;
-
             if (!IsVisibleAndActive())
+                return;
+            
+            if (narrativeId != _narrativeData.Guid)
                 return;
 
             var messageGroup = GenerateEmptyMessageGroup(NarrativeData.NarrativeEntry.MessageSender.Other);
-            AppendMessageToMessageGroup(messageGroup, _narrativeEntries[progressStep].Sender, _narrativeEntries[progressStep].Entry);
+            AppendMessageToMessageGroup(messageGroup, _narrativeData.NarrativeEntries[progressStep].Sender, _narrativeData.NarrativeEntries[progressStep].Entry);
             
             var available = UpdateGuidedChatInputAvailability(progressStep);
             if (available)
             {
-                var message = _narrativeEntries[progressStep + 1].Entry;
+                var message = _narrativeData.NarrativeEntries[progressStep + 1].Entry;
                 guidedChatInputManager.InitializeNewGuidedMessage(message);
                 guidedChatInputManager.OnMessageSentRequest = () => { SendMessage(narrativeId, message); };
             }
@@ -122,12 +121,12 @@ namespace SmallTalks.UI.Chat
 
         private bool UpdateGuidedChatInputAvailability(int progressStep)
         {
-            var chatIsAvailable = progressStep + 1 < _narrativeEntries.Count && _narrativeEntries[progressStep + 1].Sender == NarrativeData.NarrativeEntry.MessageSender.Myself;
+            var chatIsAvailable = progressStep + 1 < _narrativeData.NarrativeEntries.Count && _narrativeData.NarrativeEntries[progressStep + 1].Sender == NarrativeData.NarrativeEntry.MessageSender.Myself;
             guidedChatInputManager.SetGuidedChatInputAvailability(chatIsAvailable);
             return chatIsAvailable;
         }
-
-        public Guid GetActiveNarrativeId() => _narrativeId;
+        
+        [CanBeNull] public NarrativeData ActiveNarrativeData() => _narrativeData;
         
         #region message groups
 

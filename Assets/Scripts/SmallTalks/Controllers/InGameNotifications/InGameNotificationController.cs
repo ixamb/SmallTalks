@@ -38,13 +38,13 @@ namespace SmallTalks.Controllers.InGameNotifications
         
         private void Start()
         {
-            ReceivedChatDispatcherWithMetadata.RegisterObserver(this);
+            ReceivedNewChatMetadataDispatcher.RegisterObserver(this);
         }
 
         public void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
         {
             var chatView = _viewService.GetView<ChatView>();
-            if (!chatView || chatView.IsVisibleAndActive() || chatView.GetActiveNarrativeId() == narrativeId)
+            if (!chatView || chatView.IsVisibleAndActive() || (chatView.ActiveNarrativeData() is not null && chatView.ActiveNarrativeData()!.Guid == narrativeId))
             {
                 return;
             }
@@ -67,12 +67,8 @@ namespace SmallTalks.Controllers.InGameNotifications
             var chatView = _viewService.GetView<ChatView>("chat-view");
             if (!chatView)
                 return;
-            
-            chatView.Initialize(
-                senderData: (narrative!.Sender.ProfilePicture, narrative!.Sender.Name),
-                narrativeId: narrativeId,
-                narrativeEntries: narrative.NarrativeEntries,
-                progressStep: _localSaveService.GetNarrativeProgressStep(narrativeId));
+
+            chatView.Initialize(narrative, _localSaveService.GetNarrativeProgressStep(narrativeId));
             chatView.ShowView();
         }
     }

@@ -8,7 +8,7 @@ using VContainer;
 
 namespace SmallTalks.Services.ChatExchange
 {
-    public sealed class ReceivedChatDispatcherWithMetadata : MonoBehaviour, IChatReceivedHandler
+    public sealed class ReceivedNewChatMetadataDispatcher : MonoBehaviour, INewChatMessageObserver
     {
         private IGameDataService _gameDataService;
         
@@ -18,15 +18,15 @@ namespace SmallTalks.Services.ChatExchange
         private void Construct(IChatExchangeService chatExchangeService, IGameDataService gameDataService)
         {
             _gameDataService = gameDataService;
-            chatExchangeService.RegisterChatReceivedHandler(this);
+            chatExchangeService.RegisterNewChatMessageObserver(this);
         }
-
-        public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
+        
+        // observer function
+        public void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
         {
             var narrative = _gameDataService.GetNarrativeData(narrativeId);
             if (narrative is null)
                 return;
-            
             HandlersWithMetadata.ForEach(h => h.OnNewChatReceivedHandler(
                 narrativeId: narrativeId,
                 profilePicture: narrative.Sender.ProfilePicture,

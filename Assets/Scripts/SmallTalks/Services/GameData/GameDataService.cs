@@ -23,5 +23,11 @@ namespace SmallTalks.Services.GameData
         {
             return _dataContainer.GetNarrativeData().FirstOrDefault(narrative => narrative.Guid == guid);
         }
+        
+        
+        public List<NarrativeData> GetNarrativeData()
+        {
+            return _dataContainer.GetNarrativeData().ToList();
+        }
     }
 }

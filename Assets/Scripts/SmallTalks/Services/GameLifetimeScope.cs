@@ -1,6 +1,8 @@
 using SmallTalks.Services.ChatExchange;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
+using SmallTalks.UI.NarrativeList;
+using SmallTalks.UI.Swipe;
 using TheForge.Services.Delayer;
 using TheForge.Services.Scenes;
 using UnityEngine;
@@ -22,6 +24,9 @@ namespace SmallTalks.Services
             builder.Register<IGameDataService, GameDataService>(Lifetime.Singleton).WithParameter(gameDataContainer);
             builder.Register<IDelayerService, DelayerService>(Lifetime.Singleton);
             builder.Register<IChatExchangeService, ChatExchangeService>(Lifetime.Singleton);
+            
+            builder.Register<INarrativeStackManager, NarrativeStackManager>(Lifetime.Singleton);
+            builder.Register<INarrativePreviewListPresenter, NarrativePreviewListPresenter>(Lifetime.Singleton);
         }
     }
 }

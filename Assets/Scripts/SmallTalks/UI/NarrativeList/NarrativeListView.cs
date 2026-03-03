@@ -2,11 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SmallTalks.Data;
-using SmallTalks.Extensions;
-using SmallTalks.Services.ChatExchange;
-using SmallTalks.Services.ChatExchange.Observers;
-using SmallTalks.Services.GameData;
-using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Chat;
 using SmallTalks.UI.NarrativeList.Components;
 using TheForge.Services.Views;
@@ -15,98 +10,82 @@ using VContainer;
 
 namespace SmallTalks.UI.NarrativeList
 {
-    public sealed class NarrativeListView : View, IChatReceivedHandler
+    public sealed class NarrativeListView : View
     {
         [SerializeField] private Transform chatPreviewContent;
         [SerializeField] private NarrativePreviewComponent narrativePreviewComponentPrefab;
 
-        private IGameDataService _gameDataService;
-        private ILocalSaveService _localSaveService;
-        private IChatExchangeService _chatExchangeService;
+        private INarrativePreviewListPresenter _narrativePreviewListPresenter;
         
         private readonly Dictionary<Guid, NarrativePreviewComponent> _chatPreviewComponents = new();
 
         [Inject]
-        private void Construct(IGameDataService gameDataService, ILocalSaveService localSaveService, IChatExchangeService chatExchangeService)
+        private void Construct(INarrativePreviewListPresenter narrativePreviewListPresenter)
         {
-            _gameDataService = gameDataService;
-            _localSaveService = localSaveService;
-            _chatExchangeService = chatExchangeService;
+            _narrativePreviewListPresenter = narrativePreviewListPresenter;
+
+            _narrativePreviewListPresenter.OnNewNarrativeAdded += InstantiateNewNarrativeEntry;
+            _narrativePreviewListPresenter.OnChatMessageReceived += OnNewChatReceivedHandler;
+            _narrativePreviewListPresenter.OnChatMessageRead += MarkChatEntryAsRead;
         }
         
         private void Start()
         {
             Initialize();
-            _chatExchangeService.RegisterChatReceivedHandler(this);
         }
 
-        // purpose of initial listing display on screen
         private void Initialize()
         {
-            var narrativeData = _gameDataService.GetNarrativeDataDictionary();
-
-            foreach (var runningNarrativeKvp in _localSaveService.GetAllNarrativeProgressSteps()
-                         .Where(runningNarrativeKvp => runningNarrativeKvp.Value.Accepted)
-                         .OrderBy(runningNarrativeKvp => runningNarrativeKvp.Value.LastUpdate))
+            foreach (var narrativePreview in _narrativePreviewListPresenter.GetActiveNarrativePreviews())
             {
-                var kvp = runningNarrativeKvp;
-                
-                if (!narrativeData.TryGetValue(kvp.Key, out var data))
-                    continue;
-                
-                var narrativePreview = Instantiate(narrativePreviewComponentPrefab, chatPreviewContent);
-                narrativePreview.Initialize(new NarrativePreviewComponent.NarrativePreviewData
+                var spawnedPreview = Instantiate(narrativePreviewComponentPrefab, chatPreviewContent);
+                spawnedPreview.Initialize(new NarrativePreviewComponent.NarrativePreviewData
                 {
-                    ProfilePicture = data.Sender.ProfilePicture,
-                    Name = data.Sender.Name,
-                    Description = data.NarrativeEntries.IsIndexValid(runningNarrativeKvp.Value.Progress) ? data.NarrativeEntries[runningNarrativeKvp.Value.Progress].Entry : "Nouvelle discussion!",
-                    Tags = data.Tags.Select(tag => tag.Text).ToList(),
-                    Unread = kvp.Value.HasNewMessage,
+                    ProfilePicture = narrativePreview.Data.Sender.ProfilePicture,
+                    Name = narrativePreview.Data.Sender.Name,
+                    Description = narrativePreview.LastMessage(),
+                    Tags = narrativePreview.Data.Tags.Select(tag => tag.Text).ToList(),
+                    Unread = narrativePreview.HasNewMessage,
                     OnClick = () =>
                     {
-                        if (!data.NarrativeEntries.IsIndexValid(runningNarrativeKvp.Value.Progress))
-                            return;
-                        
-                        ShowChatView(data, kvp.Value.Progress);
-                        if (kvp.Value.HasNewMessage)
-                            _localSaveService.MarkNarrativeProgressNewMessageStatus(kvp.Key, false);
+                        ShowChatView(narrativePreview.Data, narrativePreview.ProgressStep);
+                        _narrativePreviewListPresenter.MarkMessageAsRead(narrativePreview.Data.Guid);
                     }
                 });
-                _chatPreviewComponents.TryAdd(kvp.Key, narrativePreview);
+                _chatPreviewComponents.TryAdd(narrativePreview.Data.Guid, spawnedPreview);
             }
         }
 
-        public void OnNewChatReceivedHandler(Guid narrativeId, int progressStep)
+        private void InstantiateNewNarrativeEntry(NarrativePreviewListPresenter.ActiveNarrativeEntryPreview newNarrativePreview)
         {
-            var narrativeData = _gameDataService.GetNarrativeData(narrativeId);
-            if (narrativeData is null)
-                return;
-            
-            if (_chatPreviewComponents.TryGetValue(narrativeId, out var spawnedNarrativePreview))
+            var narrativePreview = Instantiate(narrativePreviewComponentPrefab, chatPreviewContent);
+            narrativePreview.Initialize(new NarrativePreviewComponent.NarrativePreviewData
             {
-                spawnedNarrativePreview.UpdateDescription(narrativeData.NarrativeEntries[progressStep].Entry);
-                spawnedNarrativePreview.UpdateOnClick(() => ShowChatView(narrativeData, progressStep));
-            }
-            else
+                ProfilePicture = newNarrativePreview.Data.Sender.ProfilePicture,
+                Name = newNarrativePreview.Data.Sender.Name,
+                Description = "Nouvelle discussion!",
+                Tags = newNarrativePreview.Data.Tags.Select(tag => tag.Text).ToList(),
+                Unread = false,
+            });
+            narrativePreview.transform.SetSiblingIndex(1);
+            _chatPreviewComponents.Add(newNarrativePreview.Data.Guid, narrativePreview);
+        }
+
+        private void MarkChatEntryAsRead(Guid narrativeId)
+        {
+            //_chatPreviewComponents[narrativeId]?. // TODO: do something here!
+        }
+
+        private void OnNewChatReceivedHandler(NarrativePreviewListPresenter.ActiveNarrativeEntryPreview updatedNarrativePreview, string message)
+        {
+            if (_chatPreviewComponents.TryGetValue(updatedNarrativePreview.Data.Guid, out var spawnedNarrativePreview))
             {
-                var narrativePreview = Instantiate(narrativePreviewComponentPrefab, chatPreviewContent);
-                narrativePreview.Initialize(new NarrativePreviewComponent.NarrativePreviewData
+                spawnedNarrativePreview.UpdateDescription(message);
+                spawnedNarrativePreview.UpdateOnClick(() =>
                 {
-                    ProfilePicture = narrativeData.Sender.ProfilePicture,
-                    Name = narrativeData.Sender.Name,
-                    Description = narrativeData.NarrativeEntries.IsIndexValid(progressStep) ? narrativeData.NarrativeEntries[progressStep].Entry : "Nouvelle discussion!",
-                    Tags = narrativeData.Tags.Select(tag => tag.Text).ToList(),
-                    Unread = false,
-                    OnClick = () =>
-                    {
-                        if (!narrativeData.NarrativeEntries.IsIndexValid(progressStep))
-                            return;
-                        
-                        ShowChatView(narrativeData, progressStep);
-                    }
+                    ShowChatView(updatedNarrativePreview.Data, updatedNarrativePreview.ProgressStep);
+                    _narrativePreviewListPresenter.MarkMessageAsRead(updatedNarrativePreview.Data.Guid);
                 });
-                narrativePreview.transform.SetSiblingIndex(1);
-                _chatPreviewComponents.Add(narrativeId, narrativePreview);
             }
         }
         
@@ -115,8 +94,7 @@ namespace SmallTalks.UI.NarrativeList
             var chatView = ViewService.GetView<ChatView>("chat-view");
             if (chatView)
             {
-                chatView.Initialize((narrative.Sender.ProfilePicture, narrative.Sender.Name), narrative.Guid,
-                    narrative.NarrativeEntries, progress);
+                chatView.Initialize(narrative, progress);
                 chatView.ShowView();
             }
         }

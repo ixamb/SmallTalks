@@ -20,5 +20,11 @@ namespace SmallTalks.Extensions
         {
             return index >= 0 && index < list.Count;
         }
+        
+        public static void MoveItemToIndex<T>(this List<T> list, T item, int index)
+        {
+            list.Remove(item);
+            list.Insert(index, item);
+        }
     }
 }

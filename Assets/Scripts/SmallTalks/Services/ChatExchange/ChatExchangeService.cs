@@ -3,22 +3,38 @@ using System.Collections.Generic;
 using SmallTalks.Extensions;
 using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.LocalSave;
+using SmallTalks.UI.Swipe;
 using TheForge.Services.Delayer;
 using Random = UnityEngine.Random;
 
 namespace SmallTalks.Services.ChatExchange
 {
-    public sealed class ChatExchangeService : IChatExchangeService
+    public interface IChatExchangeService
     {
-        private ILocalSaveService _localSaveService;
-        private IDelayerService _delayerService;
-        
-        private readonly List<IChatReceivedHandler> _chatReceivedHandlers = new();
+        void SendMessage(Guid narrativeId);
+        void ExpectSenderAnswer(Guid narrativeId);
 
-        public ChatExchangeService(ILocalSaveService localSaveService, IDelayerService delayerService)
+        void RegisterNewNarrativeObserver(INewNarrativeObserver observer);
+        void UnregisterNewNarrativeObserver(INewNarrativeObserver observer);
+        
+        void RegisterNewChatMessageObserver(INewChatMessageObserver observer);
+        void UnregisterNewChatMessageObserver(INewChatMessageObserver observer);
+    }
+    
+    public sealed class ChatExchangeService : IChatExchangeService, INarrativeRegistrationObserver
+    {
+        private readonly ILocalSaveService _localSaveService;
+        private readonly IDelayerService _delayerService;
+        
+        private readonly List<INewNarrativeObserver> _newNarrativeObservers = new();
+        private readonly List<INewChatMessageObserver> _newChatMessageObservers = new();
+
+        public ChatExchangeService(ILocalSaveService localSaveService, IDelayerService delayerService, INarrativeStackManager narrativeStackManager)
         {
             _localSaveService = localSaveService;
             _delayerService = delayerService;
+            
+            narrativeStackManager.RegisterNarrativeRegistrationObserver(this);
         }
         
         public void SendMessage(Guid narrativeId)
@@ -27,13 +43,8 @@ namespace SmallTalks.Services.ChatExchange
             ExpectSenderAnswer(narrativeId);
         }
         
-        public void ExpectSenderAnswer(Guid narrativeId, bool isFirstMessage = false)
+        public void ExpectSenderAnswer(Guid narrativeId)
         {
-            if (isFirstMessage)
-            {
-                _localSaveService.IncreaseNarrativeProgressStep(narrativeId, -1, autoSave: false);
-            }
-            
             WaitForAnswer(onWait: () =>
             {
                 ReceiveAnswer(narrativeId);
@@ -54,10 +65,24 @@ namespace SmallTalks.Services.ChatExchange
             
             _localSaveService.MarkNarrativeProgressNewMessageStatus(narrativeId, true, autoSave: false);
             _localSaveService.Save();
-            _chatReceivedHandlers.ForEach(h => h.OnNewChatReceivedHandler(narrativeId, progressStep!.Value));
+            _newChatMessageObservers.ForEach(o => o.OnNewChatMessageReceived(narrativeId, progressStep!.Value));
+        }
+        
+        // observer function implementation
+        public void OnNewNarrativeAccepted(Guid narrativeId)
+        {
+            _localSaveService.IncreaseNarrativeProgressStep(narrativeId, -1, autoSave: false);
+            WaitForAnswer(onWait: () =>
+            {
+                ReceiveAnswer(narrativeId);
+            });
+            _newNarrativeObservers.ForEach(h => h.OnNewNarrativeActivated(narrativeId));
         }
 
-        public void RegisterChatReceivedHandler(IChatReceivedHandler handler) => _chatReceivedHandlers.AddUnique(handler);
-        public void UnregisterChatReceivedHandler(IChatReceivedHandler handler) => _chatReceivedHandlers.RemoveUnique(handler);
+        public void RegisterNewNarrativeObserver(INewNarrativeObserver observer) => _newNarrativeObservers.AddUnique(observer);
+        public void UnregisterNewNarrativeObserver(INewNarrativeObserver observer) => _newNarrativeObservers.RemoveUnique(observer);
+        
+        public void RegisterNewChatMessageObserver(INewChatMessageObserver observer) => _newChatMessageObservers.AddUnique(observer);
+        public void UnregisterNewChatMessageObserver(INewChatMessageObserver observer) => _newChatMessageObservers.RemoveUnique(observer);
     }
 }
