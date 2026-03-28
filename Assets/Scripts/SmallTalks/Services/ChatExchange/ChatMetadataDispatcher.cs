@@ -1,13 +1,17 @@
 using System;
 using SmallTalks.Services.GameData;
-using UnityEngine;
 using VContainer;
 
 namespace SmallTalks.Services.ChatExchange
 {
-    public sealed class ReceivedNewChatMetadataDispatcher : MonoBehaviour
+    public interface IChatMetadataDispatcher
     {
-        public static event Action<ChatExchangeService.NewChatReceivedWithMetadataDto> OnNewChatReceivedWithMetadata = delegate { };
+        event Action<ChatExchangeService.NewChatReceivedWithMetadataDto> OnNewChatReceivedWithMetadata;
+    }
+    
+    public sealed class ChatMetadataDispatcher : IChatMetadataDispatcher
+    {
+        public event Action<ChatExchangeService.NewChatReceivedWithMetadataDto> OnNewChatReceivedWithMetadata = delegate { };
         
         private IGameDataService _gameDataService;
         

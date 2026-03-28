@@ -17,30 +17,34 @@ namespace SmallTalks.Controllers.InGameNotifications
         private IGameDataService _gameDataService;
         private ILocalSaveService _localSaveService;
         private IChatPresenter _chatPresenter;
+
+        private IChatMetadataDispatcher _chatMetadataDispatcher;
         
         [SerializeField] private InGameNotification parentNotification;
         [SerializeField] [Range(0, 10)] private int notificationDuration = 5;
 
         private const string NotificationDisappearDelayer = "NotificationDisappearDelayer";
-
+        
         [Inject]
         private void Construct(
             IViewService viewService,
             IDelayerService delayerService,
             IGameDataService gameDataService,
             ILocalSaveService localSaveService,
-            IChatPresenter chatPresenter)
+            IChatPresenter chatPresenter,
+            IChatMetadataDispatcher chatMetadataDispatcher)
         {
             _viewService = viewService;
             _delayerService = delayerService;
             _gameDataService = gameDataService;
             _localSaveService = localSaveService;
             _chatPresenter = chatPresenter;
+            _chatMetadataDispatcher = chatMetadataDispatcher;
         }
         
         private void Start()
         {
-            ReceivedNewChatMetadataDispatcher.OnNewChatReceivedWithMetadata += dto => OnNewChatReceivedHandler(dto.NarrativeId, dto.ProfilePicture, dto.Name, dto.Message);
+            _chatMetadataDispatcher.OnNewChatReceivedWithMetadata += dto => OnNewChatReceivedHandler(dto.NarrativeId, dto.ProfilePicture, dto.Name, dto.Message);
         }
 
         private void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
