@@ -2,7 +2,6 @@ using System;
 using JetBrains.Annotations;
 using SmallTalks.Data;
 using SmallTalks.Services.ChatExchange;
-using SmallTalks.Services.ChatExchange.Observers;
 
 namespace SmallTalks.UI.Chat
 {
@@ -18,18 +17,16 @@ namespace SmallTalks.UI.Chat
         NarrativeData.NarrativeEntry GetNarrativeEntry(int index);
     }
     
-    public sealed class ChatPresenter : IChatPresenter, INewChatMessageObserver
+    public sealed class ChatPresenter : IChatPresenter
     {
         private readonly IChatExchangeService _chatExchangeService;
-
         private event Action<Guid, int> OnNewChatMessageReceivedEvent;
-        
         [CanBeNull] private NarrativeData _narrativeData;
         
         public ChatPresenter(IChatExchangeService chatExchangeService)
         {
             _chatExchangeService = chatExchangeService;
-            _chatExchangeService.RegisterNewChatMessageObserver(this);
+            _chatExchangeService.OnNewChatMessageReceived += dto => OnNewChatMessageReceived(dto.NarrativeId, dto.ProgressStep);
         }
 
         public void Initialize(NarrativeData narrativeData)
@@ -37,14 +34,17 @@ namespace SmallTalks.UI.Chat
             _narrativeData = narrativeData;
         }
         
-        public void ReplaceReceivedChatMessageEvent(Action<Guid, int> onNewChatMessageReceivedEvent)
-            => OnNewChatMessageReceivedEvent = onNewChatMessageReceivedEvent;
+        public void ReplaceReceivedChatMessageEvent(Action<Guid, int> onNewChatMessageReceivedEvent) => OnNewChatMessageReceivedEvent = onNewChatMessageReceivedEvent;
 
         public void Clear()
         {
             _narrativeData = null;
-            _chatExchangeService.UnregisterNewChatMessageObserver(this);
             OnNewChatMessageReceivedEvent = null;
+        }
+        
+        public void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
+        {
+            OnNewChatMessageReceivedEvent?.Invoke(narrativeId, progressStep);
         }
 
         public void SendMessageRequest()
@@ -62,11 +62,5 @@ namespace SmallTalks.UI.Chat
         
         public Guid? NarrativeId => _narrativeData?.Guid;
         public NarrativeData.NarrativeEntry GetNarrativeEntry(int index) => _narrativeData?.NarrativeEntries[index];
-        
-        // observer function
-        public void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
-        {
-            OnNewChatMessageReceivedEvent?.Invoke(narrativeId, progressStep);
-        }
     }
 }

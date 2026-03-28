@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using SmallTalks.Extensions;
-using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Swipe;
 using TheForge.Services.Delayer;
@@ -13,27 +10,24 @@ namespace SmallTalks.Services.ChatExchange
         void SendMessage(Guid narrativeId);
         void ExpectSenderAnswer(Guid narrativeId);
 
-        void RegisterNewNarrativeObserver(INewNarrativeObserver observer);
-        void UnregisterNewNarrativeObserver(INewNarrativeObserver observer);
-        
-        void RegisterNewChatMessageObserver(INewChatMessageObserver observer);
-        void UnregisterNewChatMessageObserver(INewChatMessageObserver observer);
+        event Action<ChatExchangeService.NewNarrativeActivatedDto> OnNewNarrativeActivated;
+        event Action<ChatExchangeService.NewChatMessageReceivedDto> OnNewChatMessageReceived;
     }
     
-    public sealed class ChatExchangeService : IChatExchangeService, INarrativeRegistrationObserver
+    public sealed class ChatExchangeService : IChatExchangeService
     {
         private readonly ILocalSaveService _localSaveService;
         private readonly IDelayerService _delayerService;
         
-        private readonly List<INewNarrativeObserver> _newNarrativeObservers = new();
-        private readonly List<INewChatMessageObserver> _newChatMessageObservers = new();
-
+        public event Action<NewNarrativeActivatedDto> OnNewNarrativeActivated = delegate { };
+        public event Action<NewChatMessageReceivedDto> OnNewChatMessageReceived =  delegate { };
+        
         public ChatExchangeService(ILocalSaveService localSaveService, IDelayerService delayerService, INarrativeStackManager narrativeStackManager)
         {
             _localSaveService = localSaveService;
             _delayerService = delayerService;
-            
-            narrativeStackManager.RegisterNarrativeRegistrationObserver(this);
+
+            narrativeStackManager.OnNewNarrativeAccepted += OnNewNarrativeAccepted;
         }
         
         public void SendMessage(Guid narrativeId)
@@ -64,24 +58,21 @@ namespace SmallTalks.Services.ChatExchange
             
             _localSaveService.MarkNarrativeProgressNewMessageStatus(narrativeId, true, autoSave: false);
             _localSaveService.Save();
-            _newChatMessageObservers.ForEach(o => o.OnNewChatMessageReceived(narrativeId, progressStep!.Value));
+            OnNewChatMessageReceived(new NewChatMessageReceivedDto(narrativeId, progressStep!.Value));
         }
         
-        // observer function implementation
-        public void OnNewNarrativeAccepted(Guid narrativeId)
+        private void OnNewNarrativeAccepted(Guid narrativeId)
         {
             _localSaveService.IncreaseNarrativeProgressStep(narrativeId, -1, autoSave: false);
             WaitForAnswer(onWait: () =>
             {
                 ReceiveAnswer(narrativeId);
             });
-            _newNarrativeObservers.ForEach(h => h.OnNewNarrativeActivated(narrativeId));
+            OnNewNarrativeActivated(new NewNarrativeActivatedDto(narrativeId));
         }
 
-        public void RegisterNewNarrativeObserver(INewNarrativeObserver observer) => _newNarrativeObservers.AddUnique(observer);
-        public void UnregisterNewNarrativeObserver(INewNarrativeObserver observer) => _newNarrativeObservers.RemoveUnique(observer);
-        
-        public void RegisterNewChatMessageObserver(INewChatMessageObserver observer) => _newChatMessageObservers.AddUnique(observer);
-        public void UnregisterNewChatMessageObserver(INewChatMessageObserver observer) => _newChatMessageObservers.RemoveUnique(observer);
+        public sealed record NewNarrativeActivatedDto (Guid NarrativeId);
+        public sealed record NewChatMessageReceivedDto (Guid NarrativeId, int ProgressStep);
+        public sealed record NewChatReceivedWithMetadataDto (Guid NarrativeId, UnityEngine.Sprite ProfilePicture, string Name, string Message);
     }
 }

@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using SmallTalks.Data;
 using SmallTalks.Services.ChatExchange;
-using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
 
@@ -20,7 +19,7 @@ namespace SmallTalks.UI.NarrativeList
         void MarkMessageAsRead(Guid narrativeId);
     }
     
-    public sealed class NarrativePreviewListPresenter : INarrativePreviewListPresenter, INewNarrativeObserver, INewChatMessageObserver
+    public sealed class NarrativePreviewListPresenter : INarrativePreviewListPresenter
     {
         private readonly IGameDataService _gameDataService;
         private readonly ILocalSaveService _localSaveService;
@@ -35,9 +34,9 @@ namespace SmallTalks.UI.NarrativeList
         {
             _gameDataService = gameDataService;
             _localSaveService = localSaveService;
-            
-            chatExchangeService.RegisterNewChatMessageObserver(this);
-            chatExchangeService.RegisterNewNarrativeObserver(this);
+
+            chatExchangeService.OnNewChatMessageReceived += dto => OnNewChatMessageReceived(dto.NarrativeId, dto.ProgressStep);
+            chatExchangeService.OnNewNarrativeActivated += dto => OnNewNarrativeActivated(dto.NarrativeId);
             
             var narrativeData = _gameDataService.GetNarrativeDataDictionary();
 
@@ -58,8 +57,7 @@ namespace SmallTalks.UI.NarrativeList
             return _activeNarrativeData.Values.Cast<ActiveNarrativeEntryPreview>().ToList();
         }
         
-        // observer function
-        public void OnNewNarrativeActivated(Guid narrativeId)
+        private void OnNewNarrativeActivated(Guid narrativeId)
         {
             if (_activeNarrativeData.Contains(narrativeId))
                 return;
@@ -77,8 +75,7 @@ namespace SmallTalks.UI.NarrativeList
             OnChatMessageRead?.Invoke(narrativeId);
         }
         
-        // observer function
-        public void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
+        private void OnNewChatMessageReceived(Guid narrativeId, int progressStep)
         {
             if (!_activeNarrativeData.Contains(narrativeId))
                 return;

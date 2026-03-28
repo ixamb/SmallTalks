@@ -1,6 +1,5 @@
 using System;
 using SmallTalks.Services.ChatExchange;
-using SmallTalks.Services.ChatExchange.Observers;
 using SmallTalks.Services.GameData;
 using SmallTalks.Services.LocalSave;
 using SmallTalks.UI.Chat;
@@ -11,7 +10,7 @@ using VContainer;
 
 namespace SmallTalks.Controllers.InGameNotifications
 {
-    public sealed class InGameNotificationController : MonoBehaviour, IChatReceivedHandlerWithMetadata
+    public sealed class InGameNotificationController : MonoBehaviour
     {
         private IViewService _viewService;
         private IDelayerService _delayerService;
@@ -41,10 +40,10 @@ namespace SmallTalks.Controllers.InGameNotifications
         
         private void Start()
         {
-            ReceivedNewChatMetadataDispatcher.RegisterObserver(this);
+            ReceivedNewChatMetadataDispatcher.OnNewChatReceivedWithMetadata += dto => OnNewChatReceivedHandler(dto.NarrativeId, dto.ProfilePicture, dto.Name, dto.Message);
         }
 
-        public void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
+        private void OnNewChatReceivedHandler(Guid narrativeId, Sprite profilePicture, string name, string message)
         {
             if (_chatPresenter.NarrativeId is not null && _chatPresenter.NarrativeId == narrativeId)
             {

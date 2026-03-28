@@ -13,9 +13,8 @@ namespace SmallTalks.UI.Swipe
         [CanBeNull] NarrativeData AcceptNarrative();
         [CanBeNull] NarrativeData RefuseNarrative();
         [CanBeNull] NarrativeData GetNextNarrative();
-        
-        void RegisterNarrativeRegistrationObserver(INarrativeRegistrationObserver observer);
-        void UnregisterNarrativeRegistrationObserver(INarrativeRegistrationObserver observer);
+
+        event Action<Guid> OnNewNarrativeAccepted;
     }
     
     public sealed class NarrativeStackManager : INarrativeStackManager
@@ -24,7 +23,7 @@ namespace SmallTalks.UI.Swipe
         
         private readonly Stack<NarrativeData> _pendingNarrativeStack;
 
-        private readonly List<INarrativeRegistrationObserver> _narrativeRegistrationObservers;
+        public event Action<Guid> OnNewNarrativeAccepted = delegate { };
         
         public NarrativeStackManager(IGameDataService gameDataService, ILocalSaveService localSaveService)
         {
@@ -33,7 +32,6 @@ namespace SmallTalks.UI.Swipe
             var narratives = gameDataService.GetNarrativeData();
             narratives.RemoveAll(narrative => _localSaveService.GetAllNarrativeProgressSteps().ContainsKey(narrative.Guid));
             _pendingNarrativeStack = new Stack<NarrativeData>(narratives);
-            _narrativeRegistrationObservers = new List<INarrativeRegistrationObserver>();
         }
         
         public NarrativeData AcceptNarrative()
@@ -43,7 +41,7 @@ namespace SmallTalks.UI.Swipe
                 return null;
             
             _localSaveService.RegisterNewNarrativeProgress(narrativeId: acceptedNarrative.Guid, wasAccepted: true);
-            _narrativeRegistrationObservers.ForEach(o => o.OnNewNarrativeAccepted(acceptedNarrative.Guid));
+            OnNewNarrativeAccepted.Invoke(acceptedNarrative.Guid);
             return acceptedNarrative;
         }
 
@@ -61,20 +59,5 @@ namespace SmallTalks.UI.Swipe
         {
             return _pendingNarrativeStack.PeekOrDefault();
         }
-
-        public void RegisterNarrativeRegistrationObserver(INarrativeRegistrationObserver observer)
-        {
-            _narrativeRegistrationObservers.AddUnique(observer);
-        }
-
-        public void UnregisterNarrativeRegistrationObserver(INarrativeRegistrationObserver observer)
-        {
-            _narrativeRegistrationObservers.RemoveUnique(observer);
-        }
-    }
-    
-    public interface INarrativeRegistrationObserver
-    {
-        void OnNewNarrativeAccepted(Guid narrativeId);
     }
 }
